@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Statystyki e-Konkursy.info</string>
+    <string name="title_home">Artykuły</string>
+    <string name="title_top_user">Użytkownicy</string>
+    <string name="title_contact">Kontakt</string>
+    <string name="dialog_loading">Trwa wczytywanie danych...</string>
+    <string name="button_ok">Ok</string>
+    <string name="button_cancel">Anuluj</string>
+
+</resources>
