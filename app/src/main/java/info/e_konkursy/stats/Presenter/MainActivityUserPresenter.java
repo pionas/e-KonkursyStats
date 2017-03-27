@@ -1,7 +1,9 @@
 package info.e_konkursy.stats.Presenter;
 
+import info.e_konkursy.stats.App.ApiModuleForStats;
 import info.e_konkursy.stats.Interface.MainActivityUserMVP;
 import info.e_konkursy.stats.Model.POJO.User;
+import info.e_konkursy.stats.Utils.Contants;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -63,5 +65,12 @@ public class MainActivityUserPresenter implements MainActivityUserMVP.Presenter 
     @Override
     public void setView(MainActivityUserMVP.View view) {
         this.view = view;
+    }
+
+    @Override
+    public void itemOnClick(User user) {
+        if (view != null) {
+            view.openUrl(Contants.BASE_URL + "profile/user/" + user.getUsername());
+        }
     }
 }

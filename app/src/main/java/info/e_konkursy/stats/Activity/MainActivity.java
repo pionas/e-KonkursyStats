@@ -1,6 +1,8 @@
 package info.e_konkursy.stats.Activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         initListener();
         initAdapter();
         initDialog();
+        initView();
     }
 
     private void initListener() {
@@ -84,13 +87,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         listViewTopArticle.setLayoutManager(new LinearLayoutManager(this));
 
 
-        usersListAdapter = new UserListAdapter(usersList);
+        usersListAdapter = new UserListAdapter(usersList, userPresenter);
         listViewTopPeople.setAdapter(usersListAdapter);
         listViewTopPeople.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         listViewTopPeople.setItemAnimator(new DefaultItemAnimator());
         listViewTopPeople.setHasFixedSize(true);
         listViewTopPeople.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     private void initDialog() {
@@ -108,6 +110,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 });
         builderDialog.setCancelable(false);
         dialog = builderDialog.create();
+    }
+
+    private void initView() {
+        articlePresenter.setView(this);
+        articlePresenter.loadData();
+        userPresenter.setView(this);
     }
 
     @Override
@@ -136,22 +144,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        articlePresenter.setView(this);
-        articlePresenter.loadData();
-        userPresenter.setView(this);
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
-        articlePresenter.rxUnsubscribe();
-        articlesList.clear();
-        articlesListAdapter.notifyDataSetChanged();
-        userPresenter.rxUnsubscribe();
-        usersList.clear();
-        usersListAdapter.notifyDataSetChanged();
+//        articlePresenter.rxUnsubscribe();
+//        articlesList.clear();
+//        articlesListAdapter.notifyDataSetChanged();
+//        userPresenter.rxUnsubscribe();
+//        usersList.clear();
+//        usersListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -167,6 +167,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public void hideDialog() {
         dialog.dismiss();
+    }
+
+    @Override
+    public void openUrl(String url) {
+        Uri uri = Uri.parse(url); // missing 'http://' will cause crashed
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 
     @Override

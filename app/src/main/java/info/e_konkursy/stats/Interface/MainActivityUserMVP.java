@@ -17,6 +17,8 @@ public interface MainActivityUserMVP {
 
         void hideDialog();
 
+        void openUrl(String url);
+
     }
 
     interface Presenter {
@@ -25,6 +27,8 @@ public interface MainActivityUserMVP {
         void rxUnsubscribe();
 
         void setView(MainActivityUserMVP.View view);
+
+        void itemOnClick(User user);
     }
 
     interface Model {

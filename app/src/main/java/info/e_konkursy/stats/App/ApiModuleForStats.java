@@ -5,6 +5,7 @@ import java.io.IOException;
 import dagger.Module;
 import dagger.Provides;
 import info.e_konkursy.stats.Interface.ApiService;
+import info.e_konkursy.stats.Utils.Contants;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -21,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class ApiModuleForStats {
-    public final String BASE_URL = "https://www.e-konkursy.info/api/";
+    public final String API_BASE_URL = Contants.BASE_URL + "api/";
 
     @Provides
     public OkHttpClient provideClient() {
@@ -52,6 +53,6 @@ public class ApiModuleForStats {
 
     @Provides
     public ApiService provideApiService() {
-        return provideRetrofit(BASE_URL, provideClient()).create(ApiService.class);
+        return provideRetrofit(API_BASE_URL, provideClient()).create(ApiService.class);
     }
 }
