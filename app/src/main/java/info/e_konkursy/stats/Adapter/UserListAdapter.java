@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import info.e_konkursy.stats.Helpers.StringsHelper;
-import info.e_konkursy.stats.Interface.MainActivityUserMVP;
+import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Model.POJO.User;
 import info.e_konkursy.stats.R;
 
@@ -20,10 +20,10 @@ import info.e_konkursy.stats.R;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ListItemViewHolder> {
 
-    private final MainActivityUserMVP.Presenter userPresenter;
+    private final MainActivityMVP.Presenter userPresenter;
     private List<User> list;
 
-    public UserListAdapter(List<User> list, MainActivityUserMVP.Presenter userPresenter) {
+    public UserListAdapter(List<User> list, MainActivityMVP.Presenter userPresenter) {
         this.list = list;
         this.userPresenter = userPresenter;
     }

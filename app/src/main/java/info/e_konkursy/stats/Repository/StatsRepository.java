@@ -6,6 +6,9 @@ import java.util.List;
 import info.e_konkursy.stats.Interface.ApiService;
 import info.e_konkursy.stats.Interface.Repository;
 import info.e_konkursy.stats.Model.POJO.Article;
+import info.e_konkursy.stats.Model.POJO.Contact;
+import info.e_konkursy.stats.Model.POJO.ContactMessage;
+import info.e_konkursy.stats.Model.POJO.Error;
 import info.e_konkursy.stats.Model.POJO.LastAdded;
 import info.e_konkursy.stats.Model.POJO.TopUsers;
 import info.e_konkursy.stats.Model.POJO.User;
@@ -33,7 +36,7 @@ public class StatsRepository implements Repository {
         userList = new ArrayList<>();
     }
 
-    public boolean isUpToDate() {
+    private boolean isUpToDate() {
         return System.currentTimeMillis() - articleTimestamp < STALE_MS;
     }
 
@@ -100,9 +103,22 @@ public class StatsRepository implements Repository {
         });
     }
 
+
     @Override
     public Observable<User> getUsersData() {
         return getUsersFromMemory().switchIfEmpty(getUsersromNetwork());
+    }
+
+    @Override
+    public Observable<Error> sendMessage(ContactMessage contactMessage) {
+        Observable<Contact> contactObservable = apiService.sendMessage(contactMessage);
+
+        return contactObservable.concatMap(new Func1<Contact, Observable<Error>>() {
+            @Override
+            public Observable<Error> call(Contact contact) {
+                return Observable.just(contact.getError());
+            }
+        });
     }
 
 }

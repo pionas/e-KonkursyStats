@@ -1,6 +1,9 @@
 package info.e_konkursy.stats.Interface;
 
 import info.e_konkursy.stats.Model.POJO.Article;
+import info.e_konkursy.stats.Model.POJO.Contact;
+import info.e_konkursy.stats.Model.POJO.ContactMessage;
+import info.e_konkursy.stats.Model.POJO.Error;
 import info.e_konkursy.stats.Model.POJO.User;
 import rx.Observable;
 
@@ -20,4 +23,6 @@ public interface Repository {
     Observable<User> getUsersFromMemory();
 
     Observable<User> getUsersromNetwork();
+
+    Observable<Error> sendMessage(ContactMessage contactMessage);
 }

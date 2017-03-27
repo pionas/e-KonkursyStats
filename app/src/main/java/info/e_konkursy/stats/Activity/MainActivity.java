@@ -16,6 +16,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,16 +30,17 @@ import butterknife.ButterKnife;
 import info.e_konkursy.stats.Adapter.ArticleListAdapter;
 import info.e_konkursy.stats.Adapter.UserListAdapter;
 import info.e_konkursy.stats.App.App;
-import info.e_konkursy.stats.Interface.MainActivityArticleMVP;
-import info.e_konkursy.stats.Interface.MainActivityUserMVP;
+import info.e_konkursy.stats.Exception.ValidationException;
+import info.e_konkursy.stats.Helpers.KeyboardHelper;
+import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Model.POJO.Article;
+import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.User;
 import info.e_konkursy.stats.R;
+import info.e_konkursy.stats.Utils.Validation.Validators;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainActivityArticleMVP.View, MainActivityUserMVP.View {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainActivityMVP.View {
 
-    @BindView(R.id.message)
-    TextView mTextMessage;
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
     @BindView(R.id.container)
@@ -46,11 +49,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     RecyclerView listViewTopArticle;
     @BindView(R.id.listViewTopPeople)
     RecyclerView listViewTopPeople;
+    @BindView(R.id.linearLayoutContact)
+    LinearLayout linearLayoutContact;
+    @BindView(R.id.editTextName)
+    EditText editTextName;
+    @BindView(R.id.editTextMail)
+    EditText editTextMail;
+    @BindView(R.id.editTextMessage)
+    EditText editTextMessage;
+//    @BindView(R.id.buttonSendForm)
+//    EditText buttonSendForm;
 
     @Inject
-    MainActivityArticleMVP.Presenter articlePresenter;
-    @Inject
-    MainActivityUserMVP.Presenter userPresenter;
+    MainActivityMVP.Presenter presenter;
 
 
     private ArticleListAdapter articlesListAdapter;
@@ -87,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         listViewTopArticle.setLayoutManager(new LinearLayoutManager(this));
 
 
-        usersListAdapter = new UserListAdapter(usersList, userPresenter);
+        usersListAdapter = new UserListAdapter(usersList, presenter);
         listViewTopPeople.setAdapter(usersListAdapter);
         listViewTopPeople.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         listViewTopPeople.setItemAnimator(new DefaultItemAnimator());
@@ -113,9 +124,40 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void initView() {
-        articlePresenter.setView(this);
-        articlePresenter.loadData();
-        userPresenter.setView(this);
+        presenter.setView(this);
+        presenter.loadArticleData();
+    }
+
+    public void initValidate(View view) {
+        ArrayList<Validators> arrayList = new ArrayList<>();
+        arrayList.add(new Validators(this, editTextName).minLenght(5).maxLenght(50).required());
+        arrayList.add(new Validators(this, editTextMail).isMail().required());
+        arrayList.add(new Validators(this, editTextMessage).minLenght(5).required());
+
+        boolean validate = true;
+        for (Validators v : arrayList) {
+            v.getTextView().setError(null);
+            try {
+                v.validate();
+            } catch (ValidationException e) {
+                v.getTextView().setError(e.getMessage());
+                validate = false;
+                if (this.getCurrentFocus() == null) {
+                    v.getTextView().requestFocus();
+                }
+            }
+        }
+
+        if (validate) {
+            ContactMessage contactMessage = new ContactMessage();
+            contactMessage.setName(editTextName.getText().toString());
+            contactMessage.setMail(editTextMail.getText().toString());
+            contactMessage.setContent(editTextMessage.getText().toString());
+            presenter.sendMessage(contactMessage);
+
+            KeyboardHelper.KeyboardHide(this, this.getCurrentFocus());
+        }
+
     }
 
     @Override
@@ -123,15 +165,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 changeVisible(View.VISIBLE, View.GONE, View.GONE);
-                articlePresenter.loadData();
+                presenter.loadArticleData();
                 return true;
             case R.id.navigation_users:
                 changeVisible(View.GONE, View.VISIBLE, View.GONE);
-                userPresenter.loadData();
+                presenter.loadUserData();
                 return true;
             case R.id.navigation_contact:
                 changeVisible(View.GONE, View.GONE, View.VISIBLE);
-                mTextMessage.setText(R.string.title_contact);
                 return true;
         }
         return false;
@@ -140,18 +181,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void changeVisible(int article, int people, int message) {
         listViewTopArticle.setVisibility(article);
         listViewTopPeople.setVisibility(people);
-        mTextMessage.setVisibility(message);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-//        articlePresenter.rxUnsubscribe();
-//        articlesList.clear();
-//        articlesListAdapter.notifyDataSetChanged();
-//        userPresenter.rxUnsubscribe();
-//        usersList.clear();
-//        usersListAdapter.notifyDataSetChanged();
+        linearLayoutContact.setVisibility(message);
     }
 
     @Override
@@ -188,4 +218,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         usersList.add(user);
         usersListAdapter.notifyItemInserted(usersList.size() - 1);
     }
+
+
 }

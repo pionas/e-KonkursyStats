@@ -25,15 +25,66 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/message"
+        <LinearLayout
+            android:id="@+id/linearLayoutContact"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:visibility="gone" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/row_padding"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name" />
+
+            <EditText
+                android:id="@+id/editTextName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:id="@+id/textViewMail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mail" />
+
+            <EditText
+                android:id="@+id/editTextMail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/textViewMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/message" />
+
+
+            <EditText
+                android:id="@+id/editTextMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine" />
+
+            <Button
+                android:id="@+id/buttonSendForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:onClick="initValidate"
+                android:text="@string/send_form"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
 
     </FrameLayout>
 
