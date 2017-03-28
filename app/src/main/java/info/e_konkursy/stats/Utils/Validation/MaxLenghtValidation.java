@@ -12,19 +12,18 @@ import info.e_konkursy.stats.R;
  */
 public class MaxLenghtValidation implements ValidateInterface {
     private Context context;
-    private TextView textView;
+    private String text;
     private int maxLenght;
 
-    public MaxLenghtValidation(Context context, TextView textView, int maxLenght) {
+    public MaxLenghtValidation(Context context, String text, int maxLenght) {
         this.context = context;
-        this.textView = textView;
+        this.text = text;
         this.maxLenght = maxLenght;
     }
 
     @Override
     public boolean validate() throws ValidationException {
-        String text = textView.getText().toString();
-        if (text.isEmpty() || text.length() > maxLenght) {
+        if (text != null && text.length() > maxLenght) {
             throw new ValidationException(context.getString(R.string.string_to_long));
         }
         return true;

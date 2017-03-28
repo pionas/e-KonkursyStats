@@ -12,19 +12,18 @@ import info.e_konkursy.stats.R;
  */
 public class MinLenghtValidation implements ValidateInterface {
     private Context context;
-    private TextView textView;
+    private String text;
     private int minLenght;
 
-    public MinLenghtValidation(Context context, TextView textView, int minLenght) {
+    public MinLenghtValidation(Context context, String text, int minLenght) {
         this.context = context;
-        this.textView = textView;
+        this.text = text;
         this.minLenght = minLenght;
     }
 
     @Override
     public boolean validate() throws ValidationException {
-        String text = textView.getText().toString();
-        if (text.isEmpty() || text.length() < minLenght) {
+        if (text == null || text.isEmpty() || text.length() < minLenght) {
             throw new ValidationException(context.getString(R.string.string_to_short));
         }
         return true;

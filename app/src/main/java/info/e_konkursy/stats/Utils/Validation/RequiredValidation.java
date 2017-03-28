@@ -12,16 +12,16 @@ import info.e_konkursy.stats.R;
  */
 public class RequiredValidation implements ValidateInterface {
     private Context context;
-    private TextView textView;
+    private String text;
 
-    public RequiredValidation(Context context, TextView textView) {
+    public RequiredValidation(Context context, String text) {
         this.context = context;
-        this.textView = textView;
+        this.text = text;
     }
 
     @Override
     public boolean validate() throws ValidationException {
-        if (textView.getText().toString().isEmpty()) {
+        if (text == null || text.isEmpty()) {
             throw new ValidationException(context.getString(R.string.empty_value));
         }
         return true;

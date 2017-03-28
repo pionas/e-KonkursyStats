@@ -13,16 +13,16 @@ import info.e_konkursy.stats.R;
  */
 public class MailValidation implements ValidateInterface {
     private Context context;
-    private TextView textView;
+    private String text;
 
-    public MailValidation(Context context, TextView textView) {
+    public MailValidation(Context context, String text) {
         this.context = context;
-        this.textView = textView;
+        this.text = text;
     }
 
     @Override
     public boolean validate() throws ValidationException {
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(textView.getText().toString()).matches()) {
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(text).matches()) {
             throw new ValidationException(context.getString(R.string.wrong_mail));
         }
         return true;
