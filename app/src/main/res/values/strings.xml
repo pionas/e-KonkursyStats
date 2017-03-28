@@ -16,5 +16,8 @@
     <string name="send_form">Wyślij wiadomość</string>
     <string name="message_was_send">Wiadomość została wysłana</string>
     <string name="no_internet_connection">Wystąpił problem z połączeniem</string>
+    <string name="app_permissions">Przejdź do ustawień aplikacji aby zmienić uprawnienia.</string>
+    <string name="permission_denied">Aby móc korzystać z aplikacji musisz nadać odpowiednie uprawnienia.</string>
+    <string name="permission_title">Brak uprawnień</string>
 
 </resources>
