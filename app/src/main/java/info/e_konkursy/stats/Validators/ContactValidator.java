@@ -1,14 +1,10 @@
 package info.e_konkursy.stats.Validators;
 
 import android.app.Activity;
-import android.content.Context;
 import android.widget.EditText;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.Exception.ValidationException;
 import info.e_konkursy.stats.Helpers.KeyboardHelper;
 import info.e_konkursy.stats.Interface.MainActivityMVP;
@@ -49,7 +45,6 @@ public class ContactValidator {
         arrayList.add(new Validators(activity, editTextName).minLenght(5).maxLenght(50).required());
         arrayList.add(new Validators(activity, editTextMail).isMail().required());
         arrayList.add(new Validators(activity, editTextMessage).minLenght(5).required());
-
     }
 
     public void validate() {

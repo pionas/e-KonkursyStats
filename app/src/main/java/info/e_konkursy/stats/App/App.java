@@ -19,10 +19,7 @@ public class App extends Application {
 
     public DaggerApplicationComponent.Builder getComponent() {
         if (component == null) {
-            component = DaggerApplicationComponent.builder()
-//                    .statsModule(new StatsModule())
-//                    .build()
-            ;
+            component = DaggerApplicationComponent.builder();
         }
         return component;
     }
