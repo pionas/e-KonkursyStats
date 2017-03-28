@@ -8,7 +8,7 @@ import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.User;
 import info.e_konkursy.stats.R;
-import info.e_konkursy.stats.Utils.Contants;
+import info.e_konkursy.stats.Utils.Constants;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -23,6 +23,7 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
     private MainActivityMVP.Model model;
     private MainActivityMVP.View view;
     private Subscription subscription = null;
+
     public MainActivityPresenter(Context context, MainActivityMVP.Model model) {
         this.context = context;
         this.model = model;
@@ -34,14 +35,14 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
             view.showDialog();
         }
 
-        subscription = model.articleResult().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .doOnError(this::showError)
+        subscription = model.articleResult()
+                .compose(applySchedulers(null))
                 .doOnNext(article -> {
                     if (view != null) {
                         view.updateData(article);
                     }
                 })
-                .doOnCompleted(() -> onComplete(null)).subscribe();
+                .subscribe();
     }
 
     @Override
@@ -49,15 +50,17 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
         if (view != null) {
             view.showDialog();
         }
-        subscription = model.usersResult().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .doOnError(this::showError)
+
+        subscription = model.usersResult()
+                .compose(applySchedulers(null))
                 .doOnNext(user -> {
                     if (view != null) {
                         view.updateData(user);
                     }
                 })
-                .doOnCompleted(() -> onComplete(null)).subscribe();
+                .subscribe();
     }
+
 
     @Override
     public void rxUnsubscribe() {
@@ -77,7 +80,7 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
     @Override
     public void itemOnClick(User user) {
         if (view != null) {
-            view.openUrl(Contants.BASE_URL + "profile/user/" + user.getUsername());
+            view.openUrl(Constants.BASE_URL + "profile/user/" + user.getUsername());
         }
     }
 
@@ -87,10 +90,9 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
             view.showDialog();
         }
 
-        subscription = model.sendMessage(contactMessage).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .doOnError(this::showError)
-                .doOnNext(null)
-                .doOnCompleted(() -> onComplete(context.getString(R.string.message_was_send))).subscribe();
+        subscription = model.sendMessage(contactMessage)
+                .compose(applySchedulers(context.getString(R.string.message_was_send)))
+                .subscribe();
     }
 
     private void onComplete(String message) {
@@ -102,15 +104,30 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
         }
     }
 
-    private void showError(Throwable e) {
-        if (view != null) {
-            String errorMessage = e.getMessage();
-            if (e instanceof UnknownHostException) {
-                errorMessage = context.getString(R.string.no_internet_connection);
+    private <T> Observable.Transformer<T, T> applySchedulers(String message) {
+        return new Observable.Transformer<T, T>() {
+            @Override
+            public Observable<T> call(Observable<T> observable) {
+                return observable
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(this::showError)
+
+                        .doOnCompleted(() -> onComplete(message));
             }
-            view.hideDialog();
-            view.showSnackbar(errorMessage);
-        }
+
+            private void showError(Throwable e) {
+                if (view != null) {
+                    String errorMessage = e.getMessage();
+                    if (e instanceof UnknownHostException) {
+                        errorMessage = context.getString(R.string.no_internet_connection);
+                    }
+                    view.hideDialog();
+                    view.showSnackbar(errorMessage);
+                }
+            }
+        };
     }
 
 }

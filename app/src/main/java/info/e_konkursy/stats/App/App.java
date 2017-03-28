@@ -5,9 +5,6 @@ import android.os.Environment;
 
 import java.io.File;
 
-import info.e_konkursy.stats.Activity.MainActivity;
-import info.e_konkursy.stats.Module.StatsModule;
-
 /**
  * Created by Adrian Pionka on 2017-03-27.
  */

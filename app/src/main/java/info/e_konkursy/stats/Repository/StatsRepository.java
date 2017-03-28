@@ -1,20 +1,13 @@
 package info.e_konkursy.stats.Repository;
 
 
-import android.util.Log;
-
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 import info.e_konkursy.stats.App.App;
 import info.e_konkursy.stats.Helpers.DateHelper;
+import info.e_konkursy.stats.Helpers.FileHelper;
 import info.e_konkursy.stats.Interface.ApiService;
 import info.e_konkursy.stats.Interface.Repository;
 import info.e_konkursy.stats.Model.POJO.Article;
@@ -24,7 +17,7 @@ import info.e_konkursy.stats.Model.POJO.Error;
 import info.e_konkursy.stats.Model.POJO.LastAdded;
 import info.e_konkursy.stats.Model.POJO.TopUsers;
 import info.e_konkursy.stats.Model.POJO.User;
-import info.e_konkursy.stats.Utils.Contants;
+import info.e_konkursy.stats.Utils.Constants;
 import rx.Observable;
 import rx.exceptions.OnErrorThrowable;
 import rx.functions.Func1;
@@ -88,30 +81,15 @@ public class StatsRepository implements Repository {
                             return Observable.just(article);
                         }
 
-                        int count;
                         String url = DateHelper.changeFormatDate("yyyy/MM/dd/", article.getDateAdd());
-                        String imageUri = Contants.APP_ARTICLE_IMAGE + url + article.getImage();
-                        try {
-                            file.createNewFile();
-                            URL urlConnect = new URL(imageUri);
-                            URLConnection conection = urlConnect.openConnection();
-                            conection.connect();
-                            InputStream input = new BufferedInputStream(urlConnect.openStream(), 8192);
-                            OutputStream output = new FileOutputStream(file);
-                            byte data[] = new byte[1024];
-                            while ((count = input.read(data)) != -1) {
-                                output.write(data, 0, count);
-                            }
-                            output.flush();
-                            output.close();
-                            input.close();
+                        String imageUri = Constants.APP_ARTICLE_IMAGE + url + article.getImage();
 
+                        try {
+                            FileHelper.downloadFile(imageUri, file);
                         } catch (Exception e) {
-                            if (file.exists()) {
-                                file.delete();
-                            }
                             throw OnErrorThrowable.from(OnErrorThrowable.addValueAsLastCause(e, article));
                         }
+
                         return Observable.just(article);
                     }
                 })

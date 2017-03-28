@@ -1,10 +1,7 @@
 package info.e_konkursy.stats.Interface;
 
-import android.view.View;
-
 import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.Model.POJO.Article;
-import info.e_konkursy.stats.Model.POJO.Contact;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.Error;
 import info.e_konkursy.stats.Model.POJO.User;
