@@ -1,6 +1,9 @@
 package info.e_konkursy.stats.App;
 
 import android.app.Application;
+import android.os.Environment;
+
+import java.io.File;
 
 import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.Module.StatsModule;
@@ -22,5 +25,14 @@ public class App extends Application {
             component = DaggerApplicationComponent.builder();
         }
         return component;
+    }
+
+    public String getStoragePath() {
+        String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/stats/";
+        File folder = new File(folderName);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folderName;
     }
 }

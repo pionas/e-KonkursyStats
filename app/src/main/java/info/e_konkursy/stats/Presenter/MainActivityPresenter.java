@@ -9,6 +9,7 @@ import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.User;
 import info.e_konkursy.stats.R;
 import info.e_konkursy.stats.Utils.Contants;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -22,7 +23,6 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
     private MainActivityMVP.Model model;
     private MainActivityMVP.View view;
     private Subscription subscription = null;
-
     public MainActivityPresenter(Context context, MainActivityMVP.Model model) {
         this.context = context;
         this.model = model;

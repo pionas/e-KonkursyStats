@@ -22,7 +22,7 @@ public interface Repository {
 
     Observable<User> getUsersFromMemory();
 
-    Observable<User> getUsersromNetwork();
+    Observable<User> getUsersNetwork();
 
     Observable<Error> sendMessage(ContactMessage contactMessage);
 }

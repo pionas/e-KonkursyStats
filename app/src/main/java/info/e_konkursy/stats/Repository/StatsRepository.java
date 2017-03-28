@@ -1,8 +1,20 @@
 package info.e_konkursy.stats.Repository;
 
+
+import android.util.Log;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.e_konkursy.stats.App.App;
+import info.e_konkursy.stats.Helpers.DateHelper;
 import info.e_konkursy.stats.Interface.ApiService;
 import info.e_konkursy.stats.Interface.Repository;
 import info.e_konkursy.stats.Model.POJO.Article;
@@ -12,8 +24,9 @@ import info.e_konkursy.stats.Model.POJO.Error;
 import info.e_konkursy.stats.Model.POJO.LastAdded;
 import info.e_konkursy.stats.Model.POJO.TopUsers;
 import info.e_konkursy.stats.Model.POJO.User;
+import info.e_konkursy.stats.Utils.Contants;
 import rx.Observable;
-import rx.functions.Action1;
+import rx.exceptions.OnErrorThrowable;
 import rx.functions.Func1;
 
 /**
@@ -41,7 +54,7 @@ public class StatsRepository implements Repository {
     }
 
     private boolean isUserUpToDate() {
-        return System.currentTimeMillis() - articleTimestamp < STALE_MS;
+        return System.currentTimeMillis() - userTimestamp < STALE_MS;
     }
 
     @Override
@@ -60,12 +73,49 @@ public class StatsRepository implements Repository {
     public Observable<Article> getArticleFromNetwork() {
         Observable<LastAdded> lastAddedObservable = apiService.getLastAdded();
 
-        return lastAddedObservable.concatMap(new Func1<LastAdded, Observable<Article>>() {
-            @Override
-            public Observable<Article> call(LastAdded lastAdded) {
-                return Observable.from(lastAdded.getArticles());
-            }
-        }).doOnNext(article -> articleList.add(article));
+        return lastAddedObservable
+                .concatMap(lastAdded -> Observable.from(lastAdded.getArticles()))
+                .doOnNext(article -> articleList.add(article))
+                .flatMap(new Func1<Article, Observable<Article>>() {
+                    @Override
+                    public Observable<Article> call(Article article) {
+                        if (article.getImage() == null || article.getImage().isEmpty()) {
+                            return Observable.just(article);
+                        }
+
+                        File file = new File(new App().getStoragePath() + File.separator + article.getImage());
+                        if (file.exists()) {
+                            return Observable.just(article);
+                        }
+
+                        int count;
+                        String url = DateHelper.changeFormatDate("yyyy/MM/dd/", article.getDateAdd());
+                        String imageUri = Contants.APP_ARTICLE_IMAGE + url + article.getImage();
+                        try {
+                            file.createNewFile();
+                            URL urlConnect = new URL(imageUri);
+                            URLConnection conection = urlConnect.openConnection();
+                            conection.connect();
+                            InputStream input = new BufferedInputStream(urlConnect.openStream(), 8192);
+                            OutputStream output = new FileOutputStream(file);
+                            byte data[] = new byte[1024];
+                            while ((count = input.read(data)) != -1) {
+                                output.write(data, 0, count);
+                            }
+                            output.flush();
+                            output.close();
+                            input.close();
+
+                        } catch (Exception e) {
+                            if (file.exists()) {
+                                file.delete();
+                            }
+                            throw OnErrorThrowable.from(OnErrorThrowable.addValueAsLastCause(e, article));
+                        }
+                        return Observable.just(article);
+                    }
+                })
+                ;
     }
 
     @Override
@@ -85,21 +135,18 @@ public class StatsRepository implements Repository {
     }
 
     @Override
-    public Observable<User> getUsersromNetwork() {
+    public Observable<User> getUsersNetwork() {
         Observable<TopUsers> topUsersObservable = apiService.getTopUsers();
 
-        return topUsersObservable.concatMap(new Func1<TopUsers, Observable<User>>() {
-            @Override
-            public Observable<User> call(TopUsers topUsers) {
-                return Observable.from(topUsers.getPeopleInfo());
-            }
-        }).doOnNext(user -> userList.add(user));
+        return topUsersObservable
+                .concatMap(topUsers -> Observable.from(topUsers.getPeopleInfo()))
+                .doOnNext(user -> userList.add(user));
     }
 
 
     @Override
     public Observable<User> getUsersData() {
-        return getUsersFromMemory().switchIfEmpty(getUsersromNetwork());
+        return getUsersFromMemory().switchIfEmpty(getUsersNetwork());
     }
 
     @Override

@@ -1,13 +1,17 @@
 package info.e_konkursy.stats.Adapter;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.List;
 
+import info.e_konkursy.stats.App.App;
 import info.e_konkursy.stats.Helpers.StringsHelper;
 import info.e_konkursy.stats.Model.POJO.Article;
 import info.e_konkursy.stats.R;
@@ -34,6 +38,14 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     public void onBindViewHolder(ListItemViewHolder holder, int position) {
         holder.articleName.setText(StringsHelper.stripslashes(list.get(position).getTitle()));
         holder.categoryName.setText(StringsHelper.stripslashes(list.get(position).getCategoryName()));
+        if (list.get(position).getImage() != null && !list.get(position).getImage().isEmpty()) {
+            File file = new File(new App().getStoragePath() + File.separator + list.get(position).getImage());
+            Uri uri = Uri.fromFile(file);
+            holder.imageView.setImageURI(uri);
+            holder.imageView.setVisibility(View.VISIBLE);
+        } else {
+            holder.imageView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -44,11 +56,13 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     public static class ListItemViewHolder extends RecyclerView.ViewHolder {
         public TextView articleName;
         public TextView categoryName;
+        public ImageView imageView;
 
         public ListItemViewHolder(View itemView) {
             super(itemView);
             articleName = (TextView) itemView.findViewById(R.id.textViewArticleTitle);
             categoryName = (TextView) itemView.findViewById(R.id.textViewArticleCategoryName);
+            imageView = (ImageView) itemView.findViewById(R.id.imageViewArticle);
         }
     }
 }
