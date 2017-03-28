@@ -3,7 +3,6 @@ package info.e_konkursy.stats.Model;
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Interface.Repository;
 import info.e_konkursy.stats.Model.POJO.Article;
-import info.e_konkursy.stats.Model.POJO.Contact;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.Error;
 import info.e_konkursy.stats.Model.POJO.User;

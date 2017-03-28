@@ -58,26 +58,20 @@ public class StatsRepository implements Repository {
 
     @Override
     public Observable<Article> getArticleFromNetwork() {
-        Observable<LastAdded> topRatedObservable = apiService.getLastAdded();
+        Observable<LastAdded> lastAddedObservable = apiService.getLastAdded();
 
-        return topRatedObservable.concatMap(new Func1<LastAdded, Observable<Article>>() {
+        return lastAddedObservable.concatMap(new Func1<LastAdded, Observable<Article>>() {
             @Override
             public Observable<Article> call(LastAdded lastAdded) {
                 return Observable.from(lastAdded.getArticles());
             }
-        }).doOnNext(new Action1<Article>() {
-            @Override
-            public void call(Article article) {
-                articleList.add(article);
-            }
-        });
+        }).doOnNext(article -> articleList.add(article));
     }
 
     @Override
     public Observable<Article> getArticlesData() {
         return getArticleFromMemory().switchIfEmpty(getArticleFromNetwork());
     }
-
 
     @Override
     public Observable<User> getUsersFromMemory() {
@@ -92,19 +86,14 @@ public class StatsRepository implements Repository {
 
     @Override
     public Observable<User> getUsersromNetwork() {
-        Observable<TopUsers> topRatedObservable = apiService.getTopUsers();
+        Observable<TopUsers> topUsersObservable = apiService.getTopUsers();
 
-        return topRatedObservable.concatMap(new Func1<TopUsers, Observable<User>>() {
+        return topUsersObservable.concatMap(new Func1<TopUsers, Observable<User>>() {
             @Override
             public Observable<User> call(TopUsers topUsers) {
                 return Observable.from(topUsers.getPeopleInfo());
             }
-        }).doOnNext(new Action1<User>() {
-            @Override
-            public void call(User user) {
-                userList.add(user);
-            }
-        });
+        }).doOnNext(user -> userList.add(user));
     }
 
 

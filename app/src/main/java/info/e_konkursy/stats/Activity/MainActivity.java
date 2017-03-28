@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Inject
     MainActivityMVP.Presenter presenter;
-
     @Inject
     ContactValidator contactValidator;
 
