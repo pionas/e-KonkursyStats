@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.App.App;
 import info.e_konkursy.stats.Interface.ApiService;
 import info.e_konkursy.stats.Interface.MainActivityMVP;
@@ -13,6 +14,7 @@ import info.e_konkursy.stats.Interface.Repository;
 import info.e_konkursy.stats.Model.MainActivityModel;
 import info.e_konkursy.stats.Presenter.MainActivityPresenter;
 import info.e_konkursy.stats.Repository.StatsRepository;
+import info.e_konkursy.stats.Validators.ContactValidator;
 
 /**
  * Created by Adrian Pionka on 2017-03-27.
@@ -20,16 +22,21 @@ import info.e_konkursy.stats.Repository.StatsRepository;
 
 @Module
 public class StatsModule {
-    protected final App application;
+    protected final MainActivity mainActivity;
 
-    public StatsModule(App application) {
-        this.application = application;
+    public StatsModule(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
 
 
     @Provides
     public Context provideContext() {
-        return application;
+        return mainActivity;
+    }
+
+    @Provides
+    public ContactValidator provideContactValidator(MainActivityMVP.Presenter presenter) {
+        return new ContactValidator(mainActivity, presenter);
     }
 
     @Provides

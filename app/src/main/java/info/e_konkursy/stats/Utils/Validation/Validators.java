@@ -14,14 +14,12 @@ import info.e_konkursy.stats.Exception.ValidationException;
 public class Validators {
     private Context context;
     private TextView textView;
-    private String text;
 
     private ArrayList<ValidateInterface> validateArrayList;
 
     public Validators(Context context, TextView textView) {
         this.context = context;
         this.textView = textView;
-        text = textView.getText().toString();
         validateArrayList = new ArrayList<>();
     }
 

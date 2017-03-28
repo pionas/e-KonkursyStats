@@ -15,5 +15,6 @@
     <string name="message">Treść wiadomości</string>
     <string name="send_form">Wyślij wiadomość</string>
     <string name="message_was_send">Wiadomość została wysłana</string>
+    <string name="no_internet_connection">Wystąpił problem z połączeniem</string>
 
 </resources>

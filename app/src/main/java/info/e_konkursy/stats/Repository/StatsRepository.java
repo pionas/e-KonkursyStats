@@ -36,14 +36,18 @@ public class StatsRepository implements Repository {
         userList = new ArrayList<>();
     }
 
-    private boolean isUpToDate() {
+    private boolean isArticleUpToDate() {
         return System.currentTimeMillis() - articleTimestamp < STALE_MS;
+    }
+
+    private boolean isUserUpToDate() {
+        return System.currentTimeMillis() - userTimestamp < STALE_MS;
     }
 
     @Override
     public Observable<Article> getArticleFromMemory() {
 
-        if (isUpToDate()) {
+        if (isArticleUpToDate()) {
             return Observable.from(articleList);
         } else {
             articleTimestamp = System.currentTimeMillis();
@@ -77,7 +81,7 @@ public class StatsRepository implements Repository {
 
     @Override
     public Observable<User> getUsersFromMemory() {
-        if (isUpToDate()) {
+        if (isUserUpToDate()) {
             return Observable.from(userList);
         } else {
             userTimestamp = System.currentTimeMillis();

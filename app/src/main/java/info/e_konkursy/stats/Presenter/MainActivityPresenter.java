@@ -2,6 +2,8 @@ package info.e_konkursy.stats.Presenter;
 
 import android.content.Context;
 
+import java.net.UnknownHostException;
+
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Model.POJO.Article;
 import info.e_konkursy.stats.Model.POJO.Contact;
@@ -45,9 +47,12 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                String errorMessage = "Error getting";
+                if (e instanceof UnknownHostException) {
+                    errorMessage = context.getString(R.string.no_internet_connection);
+                }
                 if (view != null) {
-                    view.showSnackbar("Error getting");
+                    view.showSnackbar(errorMessage);
                     view.hideDialog();
                 }
             }
@@ -76,9 +81,12 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                String errorMessage = "Error getting";
+                if (e instanceof UnknownHostException) {
+                    errorMessage = context.getString(R.string.no_internet_connection);
+                }
                 if (view != null) {
-                    view.showSnackbar("Error getting");
+                    view.showSnackbar(errorMessage);
                     view.hideDialog();
                 }
             }
@@ -130,9 +138,13 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
 
             @Override
             public void onError(Throwable e) {
+                String errorMessage = e.getMessage();
+                if (e instanceof UnknownHostException) {
+                    errorMessage = context.getString(R.string.no_internet_connection);
+                }
                 if (view != null) {
                     view.hideDialog();
-                    view.showSnackbar(e.getMessage());
+                    view.showSnackbar(errorMessage);
                 }
             }
 

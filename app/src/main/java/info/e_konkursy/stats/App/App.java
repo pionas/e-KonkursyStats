@@ -2,6 +2,7 @@ package info.e_konkursy.stats.App;
 
 import android.app.Application;
 
+import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.Module.StatsModule;
 
 /**
@@ -9,18 +10,19 @@ import info.e_konkursy.stats.Module.StatsModule;
  */
 
 public class App extends Application {
-    private ApplicationComponent component;
+    private DaggerApplicationComponent.Builder component;
 
     @Override
     public void onCreate() {
         super.onCreate();
     }
 
-    public ApplicationComponent getComponent() {
+    public DaggerApplicationComponent.Builder getComponent() {
         if (component == null) {
             component = DaggerApplicationComponent.builder()
-                    .statsModule(new StatsModule(this))
-                    .build();
+//                    .statsModule(new StatsModule())
+//                    .build()
+            ;
         }
         return component;
     }

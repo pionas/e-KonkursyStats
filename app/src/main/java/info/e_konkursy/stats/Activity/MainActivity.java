@@ -30,14 +30,18 @@ import butterknife.ButterKnife;
 import info.e_konkursy.stats.Adapter.ArticleListAdapter;
 import info.e_konkursy.stats.Adapter.UserListAdapter;
 import info.e_konkursy.stats.App.App;
+import info.e_konkursy.stats.App.ApplicationComponent;
+import info.e_konkursy.stats.App.DaggerApplicationComponent;
 import info.e_konkursy.stats.Exception.ValidationException;
 import info.e_konkursy.stats.Helpers.KeyboardHelper;
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Model.POJO.Article;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.User;
+import info.e_konkursy.stats.Module.StatsModule;
 import info.e_konkursy.stats.R;
 import info.e_konkursy.stats.Utils.Validation.Validators;
+import info.e_konkursy.stats.Validators.ContactValidator;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainActivityMVP.View {
 
@@ -57,11 +61,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     EditText editTextMail;
     @BindView(R.id.editTextMessage)
     EditText editTextMessage;
-//    @BindView(R.id.buttonSendForm)
-//    EditText buttonSendForm;
 
     @Inject
     MainActivityMVP.Presenter presenter;
+
+    @Inject
+    ContactValidator contactValidator;
 
 
     private ArticleListAdapter articlesListAdapter;
@@ -75,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ((App) getApplication()).getComponent().inject(this);
+        ((App) getApplication()).getComponent().statsModule(new StatsModule(this)).build().inject(this);
 
         ButterKnife.bind(this);
 
@@ -109,14 +114,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void initDialog() {
         AlertDialog.Builder builderDialog = new AlertDialog.Builder(this);
         builderDialog.setMessage(R.string.dialog_loading)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // FIRE ZE MISSILES!
-                    }
-                })
                 .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
+                        hideDialog();
                     }
                 });
         builderDialog.setCancelable(false);
@@ -129,35 +129,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void initValidate(View view) {
-        ArrayList<Validators> arrayList = new ArrayList<>();
-        arrayList.add(new Validators(this, editTextName).minLenght(5).maxLenght(50).required());
-        arrayList.add(new Validators(this, editTextMail).isMail().required());
-        arrayList.add(new Validators(this, editTextMessage).minLenght(5).required());
-
-        boolean validate = true;
-        for (Validators v : arrayList) {
-            v.getTextView().setError(null);
-            try {
-                v.validate();
-            } catch (ValidationException e) {
-                v.getTextView().setError(e.getMessage());
-                validate = false;
-                if (this.getCurrentFocus() == null) {
-                    v.getTextView().requestFocus();
-                }
-            }
-        }
-
-        if (validate) {
-            ContactMessage contactMessage = new ContactMessage();
-            contactMessage.setName(editTextName.getText().toString());
-            contactMessage.setMail(editTextMail.getText().toString());
-            contactMessage.setContent(editTextMessage.getText().toString());
-            presenter.sendMessage(contactMessage);
-
-            KeyboardHelper.KeyboardHide(this, this.getCurrentFocus());
-        }
-
+        contactValidator.validate();
     }
 
     @Override
@@ -219,5 +191,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         usersListAdapter.notifyItemInserted(usersList.size() - 1);
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.rxUnsubscribe();
+    }
 }
