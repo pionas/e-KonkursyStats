@@ -41,7 +41,7 @@ public class StatsRepository implements Repository {
     }
 
     private boolean isUserUpToDate() {
-        return System.currentTimeMillis() - userTimestamp < STALE_MS;
+        return System.currentTimeMillis() - articleTimestamp < STALE_MS;
     }
 
     @Override

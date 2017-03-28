@@ -29,14 +29,15 @@ public class ContactValidator {
     EditText editTextMessage;
     private ArrayList<Validators> arrayList;
 
-    public ContactValidator(MainActivity activity, MainActivityMVP.Presenter presenter) {
-        this.activity = activity;
+    public ContactValidator(MainActivityMVP.View view, MainActivityMVP.Presenter presenter) {
+        this.activity = view.getActivity();
         this.presenter = presenter;
-        this.presenter.setView(activity);
+        this.presenter.setView(view);
 
         initEditText();
         initValidate();
     }
+
     private void initEditText() {
         editTextName = (EditText) activity.findViewById(R.id.editTextName);
         editTextMail = (EditText) activity.findViewById(R.id.editTextMail);

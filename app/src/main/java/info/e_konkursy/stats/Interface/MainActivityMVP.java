@@ -1,5 +1,6 @@
 package info.e_konkursy.stats.Interface;
 
+import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.Model.POJO.Article;
 import info.e_konkursy.stats.Model.POJO.Contact;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
@@ -25,6 +26,7 @@ public interface MainActivityMVP {
 
         void openUrl(String url);
 
+        MainActivity getActivity();
 
     }
 
@@ -49,5 +51,6 @@ public interface MainActivityMVP {
         Observable<User> usersResult();
 
         Observable<Error> sendMessage(ContactMessage contactMessage);
+
     }
 }

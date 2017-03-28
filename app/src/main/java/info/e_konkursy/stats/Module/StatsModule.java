@@ -22,21 +22,20 @@ import info.e_konkursy.stats.Validators.ContactValidator;
 
 @Module
 public class StatsModule {
-    protected final MainActivity mainActivity;
+    protected final MainActivityMVP.View view;
 
-    public StatsModule(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public StatsModule(MainActivityMVP.View view) {
+        this.view = view;
     }
-
 
     @Provides
     public Context provideContext() {
-        return mainActivity;
+        return view.getActivity();
     }
 
     @Provides
     public ContactValidator provideContactValidator(MainActivityMVP.Presenter presenter) {
-        return new ContactValidator(mainActivity, presenter);
+        return new ContactValidator(view, presenter);
     }
 
     @Provides

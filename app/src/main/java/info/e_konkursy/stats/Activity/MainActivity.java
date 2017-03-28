@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +29,11 @@ import butterknife.ButterKnife;
 import info.e_konkursy.stats.Adapter.ArticleListAdapter;
 import info.e_konkursy.stats.Adapter.UserListAdapter;
 import info.e_konkursy.stats.App.App;
-import info.e_konkursy.stats.App.ApplicationComponent;
-import info.e_konkursy.stats.App.DaggerApplicationComponent;
-import info.e_konkursy.stats.Exception.ValidationException;
-import info.e_konkursy.stats.Helpers.KeyboardHelper;
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Model.POJO.Article;
-import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.User;
 import info.e_konkursy.stats.Module.StatsModule;
 import info.e_konkursy.stats.R;
-import info.e_konkursy.stats.Utils.Validation.Validators;
 import info.e_konkursy.stats.Validators.ContactValidator;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainActivityMVP.View {
@@ -176,6 +169,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Uri uri = Uri.parse(url); // missing 'http://' will cause crashed
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
+    }
+
+    @Override
+    public MainActivity getActivity() {
+        return this;
     }
 
     @Override
