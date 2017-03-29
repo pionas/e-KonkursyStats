@@ -22,110 +22,59 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class ValidatorsTest {
     private Context mContext;
-    private TextView mTextView;
-    private Validators mValidators;
-
 
     @Before
     public void setUp() throws Exception {
         mContext = InstrumentationRegistry.getTargetContext();
-        mTextView = new TextView(mContext);
+    }
 
-        mValidators = new Validators(mContext, mTextView);
+    @Test(expected = ValidationException.class)
+    public void requiredIsNull() throws ValidationException {
+        new RequiredValidation(mContext, null).validate();
+    }
+
+    @Test(expected = ValidationException.class)
+    public void requiredIsEmpty() throws ValidationException {
+        new RequiredValidation(mContext, "").validate();
     }
 
     @Test
-    public void requiredIsNull() {
-        try {
-            new RequiredValidation(mContext, null).validate();
-            assertTrue(false);
-        } catch (ValidationException e) {
-            assertTrue(true);
-            assertEquals(mContext.getString(R.string.empty_value), e.getMessage());
-        }
+    public void requiredIsNotEmpty() throws ValidationException {
+        new RequiredValidation(mContext, "TextView text").validate();
+        assertTrue(true);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void textIsToShort() throws ValidationException {
+        new MinLenghtValidation(mContext, "It is too short", 100).validate();
     }
 
     @Test
-    public void requiredIsEmpty() {
-        try {
-            new RequiredValidation(mContext, "").validate();
-            assertTrue(false);
-        } catch (ValidationException e) {
-            assertTrue(true);
-            assertEquals(mContext.getString(R.string.empty_value), e.getMessage());
-        }
+    public void textNotToShort() throws ValidationException {
+        new MinLenghtValidation(mContext, "It is not too short", 5).validate();
+        assertTrue(true);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void textIsToLong() throws ValidationException {
+        new MaxLenghtValidation(mContext, "It is too long", 5).validate();
     }
 
     @Test
-    public void requiredIsNotEmpty() {
-        try {
-            new RequiredValidation(mContext, "TextView text").validate();
-            assertTrue(true);
-        } catch (ValidationException e) {
-            assertTrue(false);
-        }
+    public void textIsNotToLong() throws ValidationException {
+        new MaxLenghtValidation(mContext, "It is too long", 50).validate();
+        assertTrue(true);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void isNotMail() throws ValidationException {
+        new MailValidation(mContext, "TEST_MAIL@dot").validate();
     }
 
     @Test
-    public void textIsToShort() {
-        try {
-            new MinLenghtValidation(mContext, "It is too short", 100).validate();
-            assertTrue(false);
-        } catch (ValidationException e) {
-            assertTrue(true);
-            assertEquals(mContext.getString(R.string.string_to_short), e.getMessage());
-        }
-    }
-
-    @Test
-    public void textNotToShort() {
-        try {
-            new MinLenghtValidation(mContext, "It is not too short", 5).validate();
-            assertTrue(true);
-        } catch (ValidationException e) {
-            assertTrue(false);
-        }
-    }
-
-    @Test
-    public void textIsToLong() throws Exception {
-        try {
-            new MaxLenghtValidation(mContext, "It is too long", 5).validate();
-            assertTrue(false);
-        } catch (ValidationException e) {
-            assertEquals(mContext.getString(R.string.string_to_long), e.getMessage());
-            assertTrue(true);
-        }
-    }
-
-    @Test
-    public void textIsNotToLong() throws Exception {
-        try {
-            new MaxLenghtValidation(mContext, "It is too long", 50).validate();
-            assertTrue(true);
-        } catch (ValidationException e) {
-            assertTrue(false);
-        }
-    }
-
-    @Test
-    public void isNotMail() throws Exception {
-        try {
-            new MailValidation(mContext, "TEST_MAIL@dot").validate();
-            assertTrue(false);
-        } catch (ValidationException e) {
-            assertTrue(true);
-        }
-    }
-
-    @Test
-    public void isMail() throws Exception {
-        try {
-            new MailValidation(mContext, "john.doe@gmail.com").validate();
-            assertTrue(true);
-        } catch (ValidationException e) {
-            assertTrue(false);
-        }
+    public void isMail() throws ValidationException {
+        new MailValidation(mContext, "john.doe@gmail.com").validate();
+        assertTrue(true);
     }
 
 }
