@@ -113,7 +113,6 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnError(this::showError)
-
                         .doOnCompleted(() -> onComplete(message));
             }
 

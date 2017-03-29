@@ -1,6 +1,7 @@
 package info.e_konkursy.stats.Utils.Validation;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;

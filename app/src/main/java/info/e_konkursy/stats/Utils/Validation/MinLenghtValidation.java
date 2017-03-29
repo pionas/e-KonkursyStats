@@ -23,6 +23,7 @@ public class MinLenghtValidation implements ValidateInterface {
 
     @Override
     public boolean validate() throws ValidationException {
+        System.out.print("MinLenghtValidation");
         if (text == null || text.isEmpty() || text.length() < minLenght) {
             throw new ValidationException(context.getString(R.string.string_to_short));
         }

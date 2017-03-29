@@ -31,7 +31,6 @@ public class ContactValidator {
         this.presenter.setView(view);
 
         initEditText();
-        initValidate();
     }
 
     private void initEditText() {
@@ -40,14 +39,8 @@ public class ContactValidator {
         editTextMessage = (EditText) activity.findViewById(R.id.editTextMessage);
     }
 
-    private void initValidate() {
-        arrayList = new ArrayList<>();
-        arrayList.add(new Validators(activity, editTextName).minLenght(5).maxLenght(50).required());
-        arrayList.add(new Validators(activity, editTextMail).isMail().required());
-        arrayList.add(new Validators(activity, editTextMessage).minLenght(5).required());
-    }
-
     public void validate() {
+        initValidate();
         boolean validate = true;
         for (Validators v : arrayList) {
             v.getTextView().setError(null);
@@ -72,5 +65,12 @@ public class ContactValidator {
             }
             KeyboardHelper.KeyboardHide(activity, activity.getCurrentFocus());
         }
+    }
+
+    private void initValidate() {
+        arrayList = new ArrayList<>();
+        arrayList.add(new Validators(activity, editTextName).minLenght(5).maxLenght(50).required());
+        arrayList.add(new Validators(activity, editTextMail).isMail().required());
+        arrayList.add(new Validators(activity, editTextMessage).minLenght(5).required());
     }
 }

@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private void initView() {
         presenter.setView(this);
-        presenter.loadArticleData();
+//        presenter.loadArticleData();
     }
 
     public void initValidate(View view) {
