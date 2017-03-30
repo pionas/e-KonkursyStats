@@ -6,8 +6,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import info.e_konkursy.stats.Activity.MainActivity;
-import info.e_konkursy.stats.App.App;
 import info.e_konkursy.stats.Interface.ApiService;
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Interface.Repository;
@@ -40,7 +38,7 @@ public class StatsModule {
 
     @Provides
     public MainActivityMVP.Presenter provideMainActivityPresenter(MainActivityMVP.Model model) {
-        return new MainActivityPresenter(provideContext(), model);
+        return new MainActivityPresenter(model);
     }
 
     @Provides

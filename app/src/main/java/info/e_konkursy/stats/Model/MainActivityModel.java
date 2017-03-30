@@ -30,7 +30,8 @@ public class MainActivityModel implements MainActivityMVP.Model {
     }
 
     @Override
-    public Observable<Error> sendMessage(ContactMessage contactMessage) {
-        return repository.sendMessage(contactMessage);
+    public Observable<Error> sendMessage(Object o) {
+        return repository.sendMessage((ContactMessage) o);
     }
+
 }

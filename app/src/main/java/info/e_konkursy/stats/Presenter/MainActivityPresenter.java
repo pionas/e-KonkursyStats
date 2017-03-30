@@ -1,31 +1,24 @@
 package info.e_konkursy.stats.Presenter;
 
-import android.content.Context;
-
-import java.net.UnknownHostException;
-
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.User;
+import info.e_konkursy.stats.Model.ResponseObservableParser;
 import info.e_konkursy.stats.R;
 import info.e_konkursy.stats.Utils.Constants;
-import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by Adrian Pionka on 2017-03-27.
  */
 
 public class MainActivityPresenter implements MainActivityMVP.Presenter {
-    private final Context context;
     private MainActivityMVP.Model model;
     private MainActivityMVP.View view;
     private Subscription subscription = null;
+    private String message;
 
-    public MainActivityPresenter(Context context, MainActivityMVP.Model model) {
-        this.context = context;
+    public MainActivityPresenter(MainActivityMVP.Model model) {
         this.model = model;
     }
 
@@ -35,14 +28,11 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
             view.showDialog();
         }
 
-        subscription = model.articleResult()
-                .compose(applySchedulers(null))
-                .doOnNext(article -> {
-                    if (view != null) {
-                        view.updateData(article);
-                    }
-                })
-                .subscribe();
+        try {
+            subscription = new ResponseObservableParser(this, model.articleResult()).getObservable().subscribe();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -51,16 +41,13 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
             view.showDialog();
         }
 
-        subscription = model.usersResult()
-                .compose(applySchedulers(null))
-                .doOnNext(user -> {
-                    if (view != null) {
-                        view.updateData(user);
-                    }
-                })
-                .subscribe();
-    }
+        try {
+            subscription = new ResponseObservableParser(this, model.usersResult()).getObservable().subscribe();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+    }
 
     @Override
     public void rxUnsubscribe() {
@@ -88,45 +75,22 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
     public void sendMessage(ContactMessage contactMessage) {
         if (view != null) {
             view.showDialog();
+            message = view.getActivity().getString(R.string.message_was_send);
         }
-
-        subscription = model.sendMessage(contactMessage)
-                .compose(applySchedulers(context.getString(R.string.message_was_send)))
-                .subscribe();
-    }
-
-    private void onComplete(String message) {
-        if (view != null) {
-            view.hideDialog();
-            if (message != null) {
-                view.showSnackbar(message);
-            }
+        try {
+            subscription = new ResponseObservableParser(this, model.sendMessage(contactMessage)).getObservable().subscribe();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    private <T> Observable.Transformer<T, T> applySchedulers(String message) {
-        return new Observable.Transformer<T, T>() {
-            @Override
-            public Observable<T> call(Observable<T> observable) {
-                return observable
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnError(this::showError)
-                        .doOnCompleted(() -> onComplete(message));
-            }
-
-            private void showError(Throwable e) {
-                if (view != null) {
-                    String errorMessage = e.getMessage();
-                    if (e instanceof UnknownHostException) {
-                        errorMessage = context.getString(R.string.no_internet_connection);
-                    }
-                    view.hideDialog();
-                    view.showSnackbar(errorMessage);
-                }
-            }
-        };
+    @Override
+    public MainActivityMVP.View getView() {
+        return view;
     }
 
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }

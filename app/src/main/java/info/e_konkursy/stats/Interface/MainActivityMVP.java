@@ -13,9 +13,7 @@ import rx.Observable;
 
 public interface MainActivityMVP {
     interface View {
-        void updateData(Article article);
-
-        void updateData(User user);
+        void updateData(Object o);
 
         void showSnackbar(String msg);
 
@@ -44,14 +42,18 @@ public interface MainActivityMVP {
 
         void sendMessage(ContactMessage contactMessage);
 
+        MainActivityMVP.View getView();
+
+        String getMessage();
+
     }
 
-    interface Model {
+    interface Model<T> {
         Observable<Article> articleResult();
 
         Observable<User> usersResult();
 
-        Observable<Error> sendMessage(ContactMessage contactMessage);
+        Observable<Error> sendMessage(Object o);
 
     }
 }
