@@ -7,6 +7,6 @@ package info.e_konkursy.stats.Utils;
 public class Constants {
     public static final String BASE_URL = "https://www.e-konkursy.info/";
     public static final String APP_ARTICLE_IMAGE = BASE_URL + "files/articles/org/";
-
+    public static final String LOCAL_STORAGE = "/stats/";
     public static final int REQUEST_CODE_ASK_PERMISSIONS = 1;
 }

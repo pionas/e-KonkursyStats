@@ -30,14 +30,11 @@ public class ApiModuleForStats {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
 
-        return new OkHttpClient.Builder().addInterceptor(interceptor).addInterceptor(new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
-                HttpUrl url = request.url().newBuilder().build();
-                request = request.newBuilder().url(url).build();
-                return chain.proceed(request);
-            }
+        return new OkHttpClient.Builder().addInterceptor(interceptor).addInterceptor(chain -> {
+            Request request = chain.request();
+            HttpUrl url = request.url().newBuilder().build();
+            request = request.newBuilder().url(url).build();
+            return chain.proceed(request);
         }).build();
     }
 

@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         listViewTopArticle.setHasFixedSize(true);
         listViewTopArticle.setLayoutManager(new LinearLayoutManager(this));
 
-
         usersListAdapter = new UserListAdapter(usersList, presenter);
         listViewTopPeople.setAdapter(usersListAdapter);
         listViewTopPeople.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -139,10 +138,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 changeVisible(View.VISIBLE, View.GONE, View.GONE);
+                articlesList.clear();
+                articlesListAdapter.notifyDataSetChanged();
                 presenter.loadArticleData();
                 return true;
             case R.id.navigation_users:
                 changeVisible(View.GONE, View.VISIBLE, View.GONE);
+                usersList.clear();
+                usersListAdapter.notifyDataSetChanged();
                 presenter.loadUserData();
                 return true;
             case R.id.navigation_contact:
@@ -186,16 +189,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     @Override
-    public void updateData(Article article) {
-        articlesList.add(article);
-        articlesListAdapter.notifyItemInserted(articlesList.size() - 1);
-    }
+    public void updateData(Object o) {
+        if (o instanceof User) {
+            usersList.add((User) o);
+            usersListAdapter.notifyItemInserted(usersList.size() - 1);
+        }
+        if (o instanceof Article) {
+            articlesList.add((Article) o);
+            articlesListAdapter.notifyItemInserted(articlesList.size() - 1);
+        }
 
-
-    @Override
-    public void updateData(User user) {
-        usersList.add(user);
-        usersListAdapter.notifyItemInserted(usersList.size() - 1);
     }
 
     @Override
