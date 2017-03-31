@@ -168,12 +168,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public void showDialog() {
-        dialog.show();
+        runOnUiThread(() -> dialog.show());
     }
 
     @Override
     public void hideDialog() {
-        dialog.dismiss();
+        runOnUiThread(() -> dialog.dismiss());
     }
 
     @Override

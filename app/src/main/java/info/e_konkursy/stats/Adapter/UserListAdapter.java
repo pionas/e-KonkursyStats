@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import info.e_konkursy.stats.Helpers.StringsHelper;
+import info.e_konkursy.stats.Interface.ListAdapterInterface;
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.Model.POJO.User;
 import info.e_konkursy.stats.R;
@@ -18,7 +19,7 @@ import info.e_konkursy.stats.R;
  * Created by Adrian Pionka on 2017-03-27.
  */
 
-public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ListItemViewHolder> {
+public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ListItemViewHolder> implements ListAdapterInterface {
 
     private final MainActivityMVP.Presenter userPresenter;
     private List<User> list;
@@ -46,6 +47,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ListIt
         });
     }
 
+    @Override
+    public void removeAt(int position) {
+        list.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, list.size());
+    }
 
     @Override
     public int getItemCount() {

@@ -13,6 +13,7 @@ import java.util.List;
 
 import info.e_konkursy.stats.App.App;
 import info.e_konkursy.stats.Helpers.StringsHelper;
+import info.e_konkursy.stats.Interface.ListAdapterInterface;
 import info.e_konkursy.stats.Model.POJO.Article;
 import info.e_konkursy.stats.R;
 
@@ -20,7 +21,7 @@ import info.e_konkursy.stats.R;
  * Created by Adrian Pionka on 2017-03-27.
  */
 
-public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ListItemViewHolder> {
+public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ListItemViewHolder> implements ListAdapterInterface {
 
     private List<Article> list;
 
@@ -46,6 +47,13 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         } else {
             holder.imageView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void removeAt(int position) {
+        list.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, list.size());
     }
 
     @Override

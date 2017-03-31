@@ -1,7 +1,5 @@
 package info.e_konkursy.stats.Helpers;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 
 import info.e_konkursy.stats.Interface.ApiService;
@@ -12,8 +10,6 @@ import info.e_konkursy.stats.Model.POJO.TopUsers;
 import info.e_konkursy.stats.Utils.RestServiceTestHelper;
 import retrofit2.http.Body;
 import rx.Observable;
-
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * Created by Adrian Pionka on 2017-03-31.
@@ -28,7 +24,6 @@ public class ApiServiceMock implements ApiService {
         if (s == null || s.isEmpty()) {
             return null;
         }
-        Log.d("aaaaaaaaa" ,"return article_list.json");
         return Observable.just(new Gson().fromJson(s, LastAdded.class));
     }
 
@@ -40,7 +35,6 @@ public class ApiServiceMock implements ApiService {
         if (s == null || s.isEmpty()) {
             return null;
         }
-        Log.d("aaaaaaaaa" ,"return top_people.json");
         return Observable.just(new Gson().fromJson(s, TopUsers.class));
 
     }

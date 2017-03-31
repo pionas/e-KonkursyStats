@@ -72,7 +72,7 @@ public class StatsRepository implements Repository {
                 .flatMap(new Func1<Article, Observable<Article>>() {
                     @Override
                     public Observable<Article> call(Article article) {
-                        if (article.getImage() == null || article.getImage().isEmpty()) {
+                        if (article.getImage() == null || article.getImage().isEmpty() || Constants.DEV_TEST) {
                             return Observable.just(article);
                         }
 
