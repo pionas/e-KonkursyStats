@@ -4,6 +4,7 @@ import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -27,6 +28,10 @@ public class ClearAdapter implements ViewAction {
     @Override
     public void perform(UiController uiController, View view) {
         RecyclerView recyclerView = (RecyclerView) view;
-        recyclerView.setAdapter(null);
+        for (int i = recyclerView.getAdapter().getItemCount() - 1; i >= 0; i--) {
+            recyclerView.getAdapter().notifyItemRemoved(i);
+        }
+        recyclerView.getAdapter().notifyDataSetChanged();
+
     }
 }

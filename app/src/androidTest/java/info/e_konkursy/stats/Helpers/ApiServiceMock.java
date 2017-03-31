@@ -9,6 +9,7 @@ import info.e_konkursy.stats.Model.POJO.Contact;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.LastAdded;
 import info.e_konkursy.stats.Model.POJO.TopUsers;
+import info.e_konkursy.stats.Utils.RestServiceTestHelper;
 import retrofit2.http.Body;
 import rx.Observable;
 
@@ -23,26 +24,25 @@ public class ApiServiceMock implements ApiService {
     public Observable<LastAdded> getLastAdded() {
         String fileName = "article_list.json";
 
-        try {
-            String s = RestServiceTestHelper.getStringFromFile(getInstrumentation().getContext(), fileName);
-            return Observable.just(new Gson().fromJson(s, LastAdded.class));
-        } catch (Exception e) {
-            e.printStackTrace();
+        String s = RestServiceTestHelper.getStringFromFile(fileName);
+        if (s == null || s.isEmpty()) {
+            return null;
         }
-        return null;
+        Log.d("aaaaaaaaa" ,"return article_list.json");
+        return Observable.just(new Gson().fromJson(s, LastAdded.class));
     }
 
     @Override
     public Observable<TopUsers> getTopUsers() {
         String fileName = "top_people.json";
 
-        try {
-            String s = RestServiceTestHelper.getStringFromFile(getInstrumentation().getContext(), fileName);
-            return Observable.just(new Gson().fromJson(s, TopUsers.class));
-        } catch (Exception e) {
-            e.printStackTrace();
+        String s = RestServiceTestHelper.getStringFromFile(fileName);
+        if (s == null || s.isEmpty()) {
+            return null;
         }
-        return null;
+        Log.d("aaaaaaaaa" ,"return top_people.json");
+        return Observable.just(new Gson().fromJson(s, TopUsers.class));
+
     }
 
     @Override

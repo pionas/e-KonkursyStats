@@ -27,6 +27,7 @@ public interface MainActivityMVP {
 
         void initValidate(android.view.View view);
 
+        String getString(int rId);
     }
 
     interface Presenter {

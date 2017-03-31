@@ -65,7 +65,7 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
     public void sendMessage(ContactMessage contactMessage) {
         if (view != null) {
             view.showDialog();
-            message = view.getActivity().getString(R.string.message_was_send);
+            message = view.getString(R.string.message_was_send);
         }
         subscription = new ResponseObservableParser(this, model.sendMessage(contactMessage)).getObservable().subscribe();
     }

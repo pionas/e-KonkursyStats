@@ -1,6 +1,5 @@
 package info.e_konkursy.stats.Presenter;
 
-import android.support.test.espresso.ViewAction;
 import android.support.test.rule.ActivityTestRule;
 
 import org.junit.Before;
@@ -45,6 +44,7 @@ public class MainActivityPresenterTest {
         StatsRepository statsRepository = new StatsRepository(apiService);
         MainActivityMVP.Model model = new MainActivityModel(statsRepository);
         mainActivityPresenter = new MainActivityPresenter(model);
+        mainActivityPresenter.setView(mActivityRule.getActivity());
     }
 
     @Test
@@ -54,12 +54,9 @@ public class MainActivityPresenterTest {
 
     @Test
     public void loadArticleData() throws Exception {
-        int totalElements = 20;
-        mainActivityPresenter.setView(mActivityRule.getActivity());
+        int totalElements = 15;
         mainActivityPresenter.loadArticleData();
-        onView(isRoot()).perform(ActionHelper.waitFor(TimeUnit.SECONDS.toMillis(5)));
         onView(withId(R.id.listViewTopArticle)).check(new RecyclerViewItemCountAssertion(totalElements));
-
     }
 
     @Test
@@ -72,9 +69,7 @@ public class MainActivityPresenterTest {
         onView(withId(R.id.navigation_users)).perform(click());
         onView(isRoot()).perform(ActionHelper.waitFor(TimeUnit.SECONDS.toMillis(5)));
         onView(withId(R.id.listViewTopPeople)).perform(new ClearAdapter());
-        int totalElements = 15;
-        mainActivityPresenter.loadUserData();
-        onView(isRoot()).perform(ActionHelper.waitFor(TimeUnit.SECONDS.toMillis(5)));
+        int totalElements = 0;
         onView(withId(R.id.listViewTopPeople)).check(new RecyclerViewItemCountAssertion(totalElements));
     }
 

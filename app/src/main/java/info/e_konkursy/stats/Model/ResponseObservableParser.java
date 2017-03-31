@@ -1,9 +1,12 @@
 package info.e_konkursy.stats.Model;
 
+import android.util.Log;
+
 import java.net.UnknownHostException;
 
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.R;
+import info.e_konkursy.stats.Utils.Constants;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -23,7 +26,7 @@ public class ResponseObservableParser {
         view = presenter.getView();
     }
 
-    private <T> rx.Observable.Transformer<T, T> applySchedulers() {
+    private synchronized <T> rx.Observable.Transformer<T, T> applySchedulers() {
         return observable1 -> observable1
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -53,7 +56,7 @@ public class ResponseObservableParser {
         if (view != null) {
             String errorMessage = e.getMessage();
             if (e instanceof UnknownHostException) {
-                errorMessage = view.getActivity().getString(R.string.no_internet_connection);
+                errorMessage = view.getString(R.string.no_internet_connection);
             }
             view.hideDialog();
             view.showSnackbar(errorMessage);
