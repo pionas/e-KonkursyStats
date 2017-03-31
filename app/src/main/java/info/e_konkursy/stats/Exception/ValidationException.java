@@ -5,6 +5,7 @@ package info.e_konkursy.stats.Exception;
  * adrian@pionka.com
  */
 public class ValidationException extends Exception {
+
     public ValidationException(String longString) {
         super(longString);
     }

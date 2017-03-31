@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.TimeUnit;
 
 import info.e_konkursy.stats.Helpers.ActionHelper;
-import info.e_konkursy.stats.Helpers.ErrorMatcher;
+import info.e_konkursy.stats.Helpers.Matcher.ErrorMatcher;
 import info.e_konkursy.stats.R;
 
 
@@ -21,7 +21,6 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.*;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -119,7 +118,6 @@ public class MainActivityTest {
         onView(withId(R.id.editTextMail)).perform(typeText(TEST_MAIL), closeSoftKeyboard());
         onView(withId(R.id.editTextMessage)).perform(typeText(STRING_TO_BE_TYPED), closeSoftKeyboard());
         onView(withId(R.id.buttonSendForm)).perform(click());
-//        onView(isRoot()).perform(ActionHelper.waitId(R.id.buttonSendForm, TimeUnit.SECONDS.toMillis(5)));
         onView(isRoot()).perform(ActionHelper.waitFor(TimeUnit.SECONDS.toMillis(5)));
         onView(withId(R.id.editTextName)).check(matches(withText(STRING_TO_BE_TYPED)));
         onView(withId(R.id.editTextMail)).check(matches(withText(TEST_MAIL)));

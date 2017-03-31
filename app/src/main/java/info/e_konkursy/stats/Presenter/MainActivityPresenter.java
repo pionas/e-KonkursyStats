@@ -27,12 +27,7 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
         if (view != null) {
             view.showDialog();
         }
-
-        try {
-            subscription = new ResponseObservableParser(this, model.articleResult()).getObservable().subscribe();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        subscription = new ResponseObservableParser(this, model.articleResult()).getObservable().subscribe();
     }
 
     @Override
@@ -40,12 +35,7 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
         if (view != null) {
             view.showDialog();
         }
-
-        try {
-            subscription = new ResponseObservableParser(this, model.usersResult()).getObservable().subscribe();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        subscription = new ResponseObservableParser(this, model.usersResult()).getObservable().subscribe();
 
     }
 
@@ -77,11 +67,7 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
             view.showDialog();
             message = view.getActivity().getString(R.string.message_was_send);
         }
-        try {
-            subscription = new ResponseObservableParser(this, model.sendMessage(contactMessage)).getObservable().subscribe();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        subscription = new ResponseObservableParser(this, model.sendMessage(contactMessage)).getObservable().subscribe();
     }
 
     @Override
