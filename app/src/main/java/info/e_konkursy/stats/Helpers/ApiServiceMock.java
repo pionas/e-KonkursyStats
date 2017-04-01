@@ -7,14 +7,13 @@ import info.e_konkursy.stats.Model.POJO.Contact;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Model.POJO.LastAdded;
 import info.e_konkursy.stats.Model.POJO.TopUsers;
-import info.e_konkursy.stats.Utils.RestServiceTestHelper;
 import retrofit2.http.Body;
 import rx.Observable;
 
 /**
- * Created by Adrian Pionka on 2017-03-31.
+ * Created by Adrian Pionka on 01 kwiecień 2017
+ * adrian@pionka.com
  */
-
 public class ApiServiceMock implements ApiService {
     @Override
     public Observable<LastAdded> getLastAdded() {

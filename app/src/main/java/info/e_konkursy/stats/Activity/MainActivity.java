@@ -1,10 +1,12 @@
 package info.e_konkursy.stats.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
@@ -42,7 +44,6 @@ import info.e_konkursy.stats.Module.StatsModule;
 import info.e_konkursy.stats.R;
 import info.e_konkursy.stats.Utils.Constants;
 import info.e_konkursy.stats.Utils.DialogManager;
-import info.e_konkursy.stats.Validators.ContactValidator;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainActivityMVP.View {
 
@@ -65,9 +66,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Inject
     MainActivityMVP.Presenter presenter;
-    @Inject
-    ContactValidator contactValidator;
-
 
     private ArticleListAdapter articlesListAdapter;
     private List<Article> articlesList = new ArrayList<>();
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ((App) getApplication()).getComponent().statsModule(new StatsModule(this)).build().inject(this);
+        ((App) getApplication()).getComponent().statsModule(new StatsModule()).build().inject(this);
 
         ButterKnife.bind(this);
 
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void initValidate(View view) {
-        contactValidator.validate();
+        presenter.contactValidate();
     }
 
     @Override

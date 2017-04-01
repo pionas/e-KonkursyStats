@@ -15,7 +15,6 @@ import info.e_konkursy.stats.Helpers.ActionHelper;
 import info.e_konkursy.stats.Helpers.Matcher.ErrorMatcher;
 import info.e_konkursy.stats.R;
 
-
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -41,6 +40,7 @@ public class MainActivityTest {
     private String errorMail;
     private String textIsToShort;
     private String textIsToLong;
+
 
     @Before
     public void setUp() throws Exception {

@@ -2,7 +2,6 @@ package info.e_konkursy.stats.App;
 
 import android.app.Application;
 import android.os.Environment;
-import android.provider.SyncStateContract;
 
 import java.io.File;
 

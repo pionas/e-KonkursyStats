@@ -47,9 +47,9 @@ public class MainActivityPresenterTest {
 
     @Before
     public void setUp() throws Exception {
+        Constants.DEV_TEST = true;
         monitor = getInstrumentation().addMonitor(MainActivity.class.getName(), null, false);
         monitor.waitForActivityWithTimeout(2000);
-        Constants.DEV_TEST = true;
         ApiService apiService = new ApiServiceMock();
         StatsRepository statsRepository = new StatsRepository(apiService);
         MainActivityMVP.Model model = new MainActivityModel(statsRepository);

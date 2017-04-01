@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import dagger.Module;
 import dagger.Provides;
+import info.e_konkursy.stats.Helpers.ApiServiceMock;
 import info.e_konkursy.stats.Interface.ApiService;
 import info.e_konkursy.stats.Utils.Constants;
 import okhttp3.HttpUrl;

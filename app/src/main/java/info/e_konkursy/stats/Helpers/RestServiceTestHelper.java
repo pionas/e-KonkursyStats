@@ -1,13 +1,11 @@
-package info.e_konkursy.stats.Utils;
-
-import android.content.Context;
+package info.e_konkursy.stats.Helpers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import info.e_konkursy.stats.App.App;
 
 /**
  * @author rebeccafranks
@@ -29,7 +27,7 @@ public class RestServiceTestHelper {
     public static String getStringFromFile(String filePath) {
 
         try {
-            final InputStream stream = getInstrumentation().getContext().getResources().getAssets().open(filePath);
+            final InputStream stream = new App().getBaseContext().getResources().getAssets().open(filePath);
             String ret = convertStreamToString(stream);
             stream.close();
             return ret;

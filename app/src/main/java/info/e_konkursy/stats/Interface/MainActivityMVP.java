@@ -1,5 +1,7 @@
 package info.e_konkursy.stats.Interface;
 
+import android.view.View;
+
 import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.Model.POJO.Article;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
@@ -28,6 +30,8 @@ public interface MainActivityMVP {
         void initValidate(android.view.View view);
 
         String getString(int rId);
+
+        android.view.View findViewById(int vID);
     }
 
     interface Presenter {
@@ -41,12 +45,13 @@ public interface MainActivityMVP {
 
         void itemOnClick(User user);
 
-        void sendMessage(ContactMessage contactMessage);
-
         MainActivityMVP.View getView();
 
         String getMessage();
 
+        void contactValidate();
+
+        void sendMessage(ContactMessage contactMessage);
     }
 
     interface Model<T> {
