@@ -1,7 +1,8 @@
-package info.e_konkursy.stats.Helpers;
+package info.e_konkursy.stats.Mock;
 
 import com.google.gson.Gson;
 
+import info.e_konkursy.stats.Helpers.RestServiceTestHelper;
 import info.e_konkursy.stats.Interface.ApiService;
 import info.e_konkursy.stats.Model.POJO.Contact;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
@@ -23,7 +24,8 @@ public class ApiServiceMock implements ApiService {
         if (s == null || s.isEmpty()) {
             return null;
         }
-        return Observable.just(new Gson().fromJson(s, LastAdded.class));
+        LastAdded lastAdded = new Gson().fromJson(s, LastAdded.class);
+        return Observable.just(lastAdded);
     }
 
     @Override
@@ -40,6 +42,12 @@ public class ApiServiceMock implements ApiService {
 
     @Override
     public Observable<Contact> sendMessage(@Body ContactMessage contactMessage) {
-        return null;
+        String fileName = "contact_form.json";
+
+        String s = RestServiceTestHelper.getStringFromFile(fileName);
+        if (s == null || s.isEmpty()) {
+            return null;
+        }
+        return Observable.just(new Gson().fromJson(s, Contact.class));
     }
 }

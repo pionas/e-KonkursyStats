@@ -23,6 +23,7 @@ import rx.exceptions.OnErrorThrowable;
 import rx.functions.Func1;
 
 /**
+ * StatsRepository
  * Created by Adrian Pionka on 2017-03-27.
  */
 
@@ -72,7 +73,7 @@ public class StatsRepository implements Repository {
                 .flatMap(new Func1<Article, Observable<Article>>() {
                     @Override
                     public Observable<Article> call(Article article) {
-                        if (article.getImage() == null || article.getImage().isEmpty() || Constants.DEV_TEST) {
+                        if (article.getImage() == null || article.getImage().isEmpty()) {
                             return Observable.just(article);
                         }
 

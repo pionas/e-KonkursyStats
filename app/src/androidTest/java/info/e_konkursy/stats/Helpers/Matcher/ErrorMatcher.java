@@ -11,24 +11,24 @@ import static android.support.test.espresso.core.deps.guava.base.Preconditions.c
 import static org.hamcrest.Matchers.is;
 
 /**
- * Created by Adrian Pionka on 2017-03-29.
+ * ErrorMatcher check View have any error
+ * Created by Adrian Pionka on 29 marzec 2017
+ * adrian@pionka.com
  */
 
 public class ErrorMatcher {
     public static Matcher<View> withError(final String substring) {
-        System.out.print("substring="+substring);
         return withError(is(substring));
     }
 
-    public static Matcher<View> withError(final Matcher<String> stringMatcher) {
+    private static Matcher<View> withError(final Matcher<String> stringMatcher) {
         checkNotNull(stringMatcher);
         return new BoundedMatcher<View, EditText>(EditText.class) {
 
             @Override
             public boolean matchesSafely(EditText view) {
                 final CharSequence error = view.getError();
-                System.out.print("error="+error.toString());
-                return error != null && stringMatcher.matches(error.toString());
+                return stringMatcher.matches(error.toString());
             }
 
             @Override

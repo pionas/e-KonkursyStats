@@ -1,20 +1,18 @@
 package info.e_konkursy.stats.Model;
 
-import android.util.Log;
-
 import java.net.UnknownHostException;
 
 import info.e_konkursy.stats.Interface.MainActivityMVP;
 import info.e_konkursy.stats.R;
-import info.e_konkursy.stats.Utils.Constants;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by Adrian Pionka on 2017-03-30.
+ * ResponseObservableParser add standard opertation to any Observable
+ * Created by Adrian Pionka on 30 marzec 2017
+ * adrian@pionka.com
  */
-
 public class ResponseObservableParser {
     private final Observable observable;
     private final MainActivityMVP.Presenter presenter;
@@ -32,6 +30,10 @@ public class ResponseObservableParser {
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(this::onNext)
+                .onErrorReturn(throwable -> {
+                    showError(throwable);
+                    return null;
+                })
                 .doOnError(this::showError)
                 .doOnCompleted(this::onComplete);
     }

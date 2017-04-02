@@ -1,11 +1,10 @@
 package info.e_konkursy.stats.Helpers;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import info.e_konkursy.stats.App.App;
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 
 /**
  * @author rebeccafranks
@@ -13,7 +12,7 @@ import info.e_konkursy.stats.App.App;
  */
 public class RestServiceTestHelper {
 
-    public static String convertStreamToString(InputStream is) throws Exception {
+    private static String convertStreamToString(InputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
         String line;
@@ -27,16 +26,16 @@ public class RestServiceTestHelper {
     public static String getStringFromFile(String filePath) {
 
         try {
-            final InputStream stream = new App().getBaseContext().getResources().getAssets().open(filePath);
+            final InputStream stream = getInstrumentation().getContext().getResources().getAssets().open(filePath);
             String ret = convertStreamToString(stream);
             stream.close();
             return ret;
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
 
     }
+
+
 }

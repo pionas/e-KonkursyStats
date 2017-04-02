@@ -1,5 +1,6 @@
 package info.e_konkursy.stats.Presenter;
 
+import android.support.annotation.VisibleForTesting;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import info.e_konkursy.stats.Utils.Validation.Validators;
 import rx.Subscription;
 
 /**
+ * MainActivityPresenter operates on methods from the interface MainActivityMVP.Presenter
  * Created by Adrian Pionka on 2017-03-27.
  */
 
@@ -121,5 +123,10 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
             message = view.getString(R.string.message_was_send);
         }
         subscription = new ResponseObservableParser(this, model.sendMessage(contactMessage)).getObservable().subscribe();
+    }
+
+    @VisibleForTesting
+    public void setModel(MainActivityMVP.Model model) {
+        this.model = model;
     }
 }
