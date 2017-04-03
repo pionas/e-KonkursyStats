@@ -31,8 +31,6 @@ public interface MainActivityMVP {
         void initValidate(android.view.View view);
 
         String getString(int rId);
-
-        android.view.View findViewById(int vID);
     }
 
     interface Presenter {
@@ -49,8 +47,6 @@ public interface MainActivityMVP {
         MainActivityMVP.View getView();
 
         String getMessage();
-
-        void contactValidate();
 
         void sendMessage(ContactMessage contactMessage);
 
