@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import info.e_konkursy.stats.Helpers.StringsHelper;
 import info.e_konkursy.stats.Interface.ListAdapterInterface;
 import info.e_konkursy.stats.Interface.TopPeopleFragmentMVP;
@@ -39,12 +41,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ListIt
     public void onBindViewHolder(UserListAdapter.ListItemViewHolder holder, final int position) {
         holder.userName.setText(StringsHelper.stripslashes(list.get(position).getUsername()));
         holder.userCount.setText(StringsHelper.stripslashes(list.get(position).getIlosc()));
-        holder.userRow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userPresenter.itemOnClick(list.get(position));
-            }
-        });
+        holder.userRow.setOnClickListener(view -> userPresenter.itemOnClick(list.get(position)));
     }
 
     @Override
@@ -60,15 +57,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ListIt
     }
 
     public static class ListItemViewHolder extends RecyclerView.ViewHolder {
-        public RelativeLayout userRow;
-        public TextView userName;
-        public TextView userCount;
+        @BindView(R.id.relativeLayoutUserRow) RelativeLayout userRow;
+        @BindView(R.id.textViewUsername) TextView userName;
+        @BindView(R.id.textViewCount) TextView userCount;
 
         public ListItemViewHolder(View itemView) {
             super(itemView);
-            userRow = (RelativeLayout) itemView.findViewById(R.id.relativeLayoutUserRow);
-            userName = (TextView) itemView.findViewById(R.id.textViewUsername);
-            userCount = (TextView) itemView.findViewById(R.id.textViewCount);
+            ButterKnife.bind(this, itemView);
         }
 
     }

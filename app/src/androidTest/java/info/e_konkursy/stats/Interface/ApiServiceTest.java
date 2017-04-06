@@ -35,7 +35,6 @@ public class ApiServiceTest {
     public void setUp() throws Exception {
         monitor = getInstrumentation().addMonitor(MainActivity.class.getName(), null, false);
         monitor.waitForActivityWithTimeout(2000);
-        Constants.DEV_TEST = true;
         mockWebServer = new MockWebServer();
         mockWebServer.start();
         final Dispatcher dispatcher = new Dispatcher() {
@@ -58,7 +57,6 @@ public class ApiServiceTest {
     public void tearDown() throws Exception {
         mockWebServer.shutdown();
         getInstrumentation().removeMonitor(monitor);
-        Constants.DEV_TEST = false;
     }
 
 

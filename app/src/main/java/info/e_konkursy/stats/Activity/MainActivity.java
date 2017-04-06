@@ -7,8 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
@@ -28,6 +29,7 @@ import info.e_konkursy.stats.Helpers.PermissionsHelper;
 import info.e_konkursy.stats.R;
 import info.e_konkursy.stats.Utils.Constants;
 import info.e_konkursy.stats.Utils.DialogManager;
+import info.e_konkursy.stats.Utils.Log;
 
 public class MainActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -50,30 +52,30 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         if (!requestPermissions()) {
             return;
         }
-        initView();
+        initDefaultFragment();
     }
 
     private void initListener() {
         navigation.setOnNavigationItemSelectedListener(this);
     }
 
-    private void initView() {
-        if (fragment == null) {
-            fragment = HomeFragment.newInstance();
-            loadFragment();
-        }
-
-        if (navigation == null || navigation.getChildCount() == 0) {
+    private void initDefaultFragment() {
+        if (fragment != null) {
             return;
-
         }
-        navigation.getChildAt(0).setSelected(true);
 
+        navigation.getMenu().performIdentifierAction(R.id.navigation_home, 0);
     }
 
+
     private void loadFragment() {
-        Log.d("aaaaaaa", "loadFragment=" + fragment.getClass().getSimpleName());
-        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+        ft.replace(R.id.content, fragment);
+        if (!(fragment instanceof HomeFragment)) {
+            ft.addToBackStack(null);
+        }
+        ft.commit();
     }
 
 
@@ -138,7 +140,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
                         }
                     }
                     if (startActivity) {
-                        initView();
+                        initDefaultFragment();
                     } else {
 
                         boolean showDialog = false;
@@ -161,6 +163,16 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            navigation.getMenu().getItem(0).setChecked(true);
+        } else {
+            super.onBackPressed();
         }
     }
 

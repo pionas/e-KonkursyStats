@@ -15,7 +15,6 @@ import rx.Observable;
 public class TopPeopleFragmentRepository extends BaseRepository<User> implements Repository<User> {
     public TopPeopleFragmentRepository(ApiService apiService) {
         super(apiService);
-        Log.d("aaaaaaa", "TopPeopleFragmentRepository");
     }
 
     @Override

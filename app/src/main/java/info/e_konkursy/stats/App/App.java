@@ -19,6 +19,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        info.e_konkursy.stats.Utils.Environment.configure();
     }
 
 
@@ -44,7 +45,7 @@ public class App extends Application {
     }
 
     public String getStoragePath() {
-        String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + Constants.LOCAL_STORAGE;
+        String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + info.e_konkursy.stats.Utils.Environment.localStorage;
         File folder = new File(folderName);
         if (!folder.exists()) {
             folder.mkdirs();

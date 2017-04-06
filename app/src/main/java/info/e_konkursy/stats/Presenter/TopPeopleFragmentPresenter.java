@@ -4,6 +4,7 @@ import info.e_konkursy.stats.Interface.TopPeopleFragmentMVP;
 import info.e_konkursy.stats.Model.POJO.User;
 import info.e_konkursy.stats.Model.ResponseObservableParser;
 import info.e_konkursy.stats.Utils.Constants;
+import info.e_konkursy.stats.Utils.Environment;
 
 /**
  * Created by Adrian Pionka on 05 kwiecień 2017
@@ -17,7 +18,7 @@ public class TopPeopleFragmentPresenter extends BasePresenter<TopPeopleFragmentM
     @Override
     public void itemOnClick(User user) {
         if (view != null) {
-            view.openUrl(Constants.BASE_URL + "profile/user/" + user.getUsername());
+            view.openUrl(Environment.baseUrl + "profile/user/" + user.getUsername());
         }
     }
 

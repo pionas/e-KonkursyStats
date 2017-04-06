@@ -11,7 +11,7 @@ import info.e_konkursy.stats.Model.POJO.Article;
 
 public interface HomeFragmentMVP {
     interface View extends BaseView<Article> {
-
+        void openUrl(String url);
     }
 
     interface Presenter extends BasePresenter<Article> {

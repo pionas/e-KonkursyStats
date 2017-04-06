@@ -23,6 +23,7 @@ import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Module.ContactModule;
 import info.e_konkursy.stats.Module.TopPeopleModule;
 import info.e_konkursy.stats.R;
+import info.e_konkursy.stats.Utils.UIMessage;
 import info.e_konkursy.stats.Utils.Validation.Validators;
 
 /**
@@ -53,8 +54,8 @@ public class ContactFragment extends BaseFragment implements ContactFragmentMVP.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         mActivity = getActivity();
-
         new App().getContactComponent().contactModule(new ContactModule()).build().inject(this);
         initDialog();
     }
@@ -62,9 +63,15 @@ public class ContactFragment extends BaseFragment implements ContactFragmentMVP.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_contact, container, false);
-        ButterKnife.bind(view);
-        return view;
+        rootView = inflater.inflate(R.layout.fragment_contact, container, false);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.setView(this);
     }
 
     @Override
@@ -96,10 +103,6 @@ public class ContactFragment extends BaseFragment implements ContactFragmentMVP.
             presenter.sendMessage(contactMessage);
             KeyboardHelper.KeyboardHide(mActivity, mActivity.getCurrentFocus());
         }
-    }
-
-    private View findViewById(int fId) {
-        return mActivity.findViewById(fId);
     }
 
     @Override

@@ -1,20 +1,22 @@
 package info.e_konkursy.stats.Fragment;
 
-import android.support.design.widget.Snackbar;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.view.ViewGroup;
+import android.view.View;
 
 import butterknife.BindView;
 import info.e_konkursy.stats.R;
+import info.e_konkursy.stats.Utils.UIMessage;
 
 /**
  * Created by Adrian Pionka on 05 kwiecień 2017
  * adrian@pionka.com
  */
 public abstract class BaseFragment extends Fragment {
-    @BindView(R.id.container)
-    ViewGroup rootView;
+    protected View rootView;
 
     private AlertDialog dialog;
 
@@ -27,7 +29,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void showSnackbar(String msg) {
-        Snackbar.make(rootView, msg, Snackbar.LENGTH_SHORT).show();
+        UIMessage.showMessage(rootView, msg);
     }
 
     public void showDialog() {
@@ -35,6 +37,15 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void hideDialog() {
-        getActivity().runOnUiThread(() -> dialog.dismiss());
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+    }
+
+    public void openUrl(String url) {
+        Uri uri = Uri.parse(url); // missing 'http://' will cause crashed
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.push_left_in, R.anim.push_up_out);
     }
 }

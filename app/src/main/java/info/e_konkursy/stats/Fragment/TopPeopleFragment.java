@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,14 +38,15 @@ public class TopPeopleFragment extends BaseFragment implements TopPeopleFragment
     }
 
     @SuppressWarnings("unused")
-    public static HomeFragment newInstance() {
-        HomeFragment fragment = new HomeFragment();
+    public static TopPeopleFragment newInstance() {
+        TopPeopleFragment fragment = new TopPeopleFragment();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         new App().getTopPeopleComponent().topPeopleModule(new TopPeopleModule()).build().inject(this);
         initDialog();
     }
@@ -51,23 +54,28 @@ public class TopPeopleFragment extends BaseFragment implements TopPeopleFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_top_people_list, container, false);
-        ButterKnife.bind(view);
+        rootView = inflater.inflate(R.layout.fragment_top_people_list, container, false);
+        ButterKnife.bind(this, rootView);
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+        if (rootView instanceof RecyclerView) {
+            Context context = rootView.getContext();
+            RecyclerView recyclerView = (RecyclerView) rootView;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setHasFixedSize(true);
+            recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
             usersListAdapter = new UserListAdapter(usersList, presenter);
             recyclerView.setAdapter(usersListAdapter);
         }
-        return view;
+        return rootView;
     }
 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        presenter.loadData();
+        if (usersList == null || usersList.size() == 0) {
+            presenter.loadData();
+        }
     }
 
     @Override
@@ -76,10 +84,4 @@ public class TopPeopleFragment extends BaseFragment implements TopPeopleFragment
         usersListAdapter.notifyItemInserted(usersList.size() - 1);
     }
 
-    @Override
-    public void openUrl(String url) {
-        Uri uri = Uri.parse(url); // missing 'http://' will cause crashed
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        startActivity(intent);
-    }
 }

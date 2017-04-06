@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.e_konkursy.stats.Interface.ApiService;
+import info.e_konkursy.stats.Utils.Environment;
 import rx.Observable;
 
 /**
@@ -12,7 +13,6 @@ import rx.Observable;
  */
 public abstract class BaseRepository<T> {
     protected ApiService apiService;
-    protected static final long STALE_MS = 20 * 1000; // Data is stale after 20 seconds
     protected long repositoryTimestamp;
     protected List<T> list;
 
@@ -24,7 +24,7 @@ public abstract class BaseRepository<T> {
     }
 
     protected boolean isUpToDate() {
-        return System.currentTimeMillis() - repositoryTimestamp < STALE_MS;
+        return System.currentTimeMillis() - repositoryTimestamp < Environment.CACHE_MAX_LIFETIME_IN_MILLIS;
     }
 
     public Observable<T> getFromMemory() {

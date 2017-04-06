@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import info.e_konkursy.stats.Interface.ApiService;
 import info.e_konkursy.stats.Utils.Constants;
+import info.e_konkursy.stats.Utils.Environment;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -21,13 +22,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class ApiModuleForStats {
-    private final String API_BASE_URL = Constants.BASE_URL + "api/";
-
     @Provides
     public OkHttpClient provideClient() {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        interceptor.setLevel(Environment.showLog ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
 
         return new OkHttpClient.Builder().addInterceptor(interceptor).addInterceptor(chain -> {
             Request request = chain.request();
@@ -49,6 +48,6 @@ public class ApiModuleForStats {
 
     @Provides
     public ApiService provideApiService() {
-        return provideRetrofit(API_BASE_URL, provideClient()).create(ApiService.class);
+        return provideRetrofit(info.e_konkursy.stats.Utils.Environment.apiUrl, provideClient()).create(ApiService.class);
     }
 }
