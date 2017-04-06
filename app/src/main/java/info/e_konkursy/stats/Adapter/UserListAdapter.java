@@ -11,7 +11,7 @@ import java.util.List;
 
 import info.e_konkursy.stats.Helpers.StringsHelper;
 import info.e_konkursy.stats.Interface.ListAdapterInterface;
-import info.e_konkursy.stats.Interface.MainActivityMVP;
+import info.e_konkursy.stats.Interface.TopPeopleFragmentMVP;
 import info.e_konkursy.stats.Model.POJO.User;
 import info.e_konkursy.stats.R;
 
@@ -21,10 +21,10 @@ import info.e_konkursy.stats.R;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ListItemViewHolder> implements ListAdapterInterface {
 
-    private final MainActivityMVP.Presenter userPresenter;
+    private final TopPeopleFragmentMVP.Presenter userPresenter;
     private List<User> list;
 
-    public UserListAdapter(List<User> list, MainActivityMVP.Presenter userPresenter) {
+    public UserListAdapter(List<User> list, TopPeopleFragmentMVP.Presenter userPresenter) {
         this.list = list;
         this.userPresenter = userPresenter;
     }

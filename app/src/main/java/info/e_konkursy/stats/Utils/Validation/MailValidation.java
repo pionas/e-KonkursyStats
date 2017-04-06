@@ -2,7 +2,6 @@ package info.e_konkursy.stats.Utils.Validation;
 
 
 import android.content.Context;
-import android.widget.TextView;
 
 import info.e_konkursy.stats.Exception.ValidationException;
 import info.e_konkursy.stats.R;

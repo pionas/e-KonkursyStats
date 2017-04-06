@@ -2,7 +2,8 @@ package info.e_konkursy.stats.Model;
 
 import java.net.UnknownHostException;
 
-import info.e_konkursy.stats.Interface.MainActivityMVP;
+import info.e_konkursy.stats.Interface.BaseView;
+import info.e_konkursy.stats.Presenter.BasePresenter;
 import info.e_konkursy.stats.R;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -15,13 +16,13 @@ import rx.schedulers.Schedulers;
  */
 public class ResponseObservableParser {
     private final Observable observable;
-    private final MainActivityMVP.Presenter presenter;
-    private final MainActivityMVP.View view;
+    private final BasePresenter presenter;
+    private final BaseView view;
 
-    public ResponseObservableParser(MainActivityMVP.Presenter presenter, Observable observable) {
+    public ResponseObservableParser(BasePresenter presenter, Observable observable) {
         this.presenter = presenter;
         this.observable = observable;
-        view = presenter.getView();
+        view = (BaseView) presenter.getView();
     }
 
     private synchronized <T> rx.Observable.Transformer<T, T> applySchedulers() {

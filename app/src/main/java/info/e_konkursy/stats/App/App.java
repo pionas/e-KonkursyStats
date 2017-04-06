@@ -12,18 +12,35 @@ import info.e_konkursy.stats.Utils.Constants;
  */
 
 public class App extends Application {
-    private DaggerApplicationComponent.Builder component;
+    private DaggerHomeComponent.Builder homeComponent;
+    private DaggerContactComponent.Builder contactComponent;
+    private DaggerTopPeopleComponent.Builder topPeopleComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
     }
 
-    public DaggerApplicationComponent.Builder getComponent() {
-        if (component == null) {
-            component = DaggerApplicationComponent.builder();
+
+    public DaggerHomeComponent.Builder getHomeComponent() {
+        if (homeComponent == null) {
+            homeComponent = DaggerHomeComponent.builder();
         }
-        return component;
+        return homeComponent;
+    }
+
+    public DaggerContactComponent.Builder getContactComponent() {
+        if (contactComponent == null) {
+            contactComponent = DaggerContactComponent.builder();
+        }
+        return contactComponent;
+    }
+
+    public DaggerTopPeopleComponent.Builder getTopPeopleComponent() {
+        if (topPeopleComponent == null) {
+            topPeopleComponent = DaggerTopPeopleComponent.builder();
+        }
+        return topPeopleComponent;
     }
 
     public String getStoragePath() {

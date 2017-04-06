@@ -1,96 +1,52 @@
 package info.e_konkursy.stats.Activity;
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import info.e_konkursy.stats.Adapter.ArticleListAdapter;
-import info.e_konkursy.stats.Adapter.UserListAdapter;
-import info.e_konkursy.stats.App.App;
-import info.e_konkursy.stats.Exception.ValidationException;
-import info.e_konkursy.stats.Helpers.KeyboardHelper;
+import info.e_konkursy.stats.Fragment.BaseFragment;
+import info.e_konkursy.stats.Fragment.ContactFragment;
+import info.e_konkursy.stats.Fragment.HomeFragment;
+import info.e_konkursy.stats.Fragment.TopPeopleFragment;
 import info.e_konkursy.stats.Helpers.PermissionsHelper;
-import info.e_konkursy.stats.Interface.MainActivityMVP;
-import info.e_konkursy.stats.Model.POJO.Article;
-import info.e_konkursy.stats.Model.POJO.ContactMessage;
-import info.e_konkursy.stats.Model.POJO.User;
-import info.e_konkursy.stats.Module.StatsModule;
 import info.e_konkursy.stats.R;
 import info.e_konkursy.stats.Utils.Constants;
 import info.e_konkursy.stats.Utils.DialogManager;
-import info.e_konkursy.stats.Utils.Validation.Validators;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainActivityMVP.View {
+public class MainActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
     @BindView(R.id.container)
     ViewGroup rootView;
-    @BindView(R.id.listViewTopArticle)
-    RecyclerView listViewTopArticle;
-    @BindView(R.id.listViewTopPeople)
-    RecyclerView listViewTopPeople;
-    @BindView(R.id.linearLayoutContact)
-    LinearLayout linearLayoutContact;
-    @BindView(R.id.editTextName)
-    EditText editTextName;
-    @BindView(R.id.editTextMail)
-    EditText editTextMail;
-    @BindView(R.id.editTextMessage)
-    EditText editTextMessage;
 
-    @Inject
-    MainActivityMVP.Presenter presenter;
-
-    private ArticleListAdapter articlesListAdapter;
-    private List<Article> articlesList = new ArrayList<>();
-    private UserListAdapter usersListAdapter;
-    private List<User> usersList = new ArrayList<>();
-    private AlertDialog dialog;
     private ArrayList<String> persmissions;
+    private BaseFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ((App) getApplication()).getComponent().statsModule(new StatsModule()).build().inject(this);
-
         ButterKnife.bind(this);
-
         persmissions = PermissionsHelper.getPermissionList();
 
         initListener();
-        initAdapter();
-        initDialog();
         if (!requestPermissions()) {
             return;
         }
@@ -101,65 +57,23 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         navigation.setOnNavigationItemSelectedListener(this);
     }
 
-    private void initAdapter() {
-        articlesListAdapter = new ArticleListAdapter(articlesList);
-        listViewTopArticle.setAdapter(articlesListAdapter);
-        listViewTopArticle.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        listViewTopArticle.setItemAnimator(new DefaultItemAnimator());
-        listViewTopArticle.setHasFixedSize(true);
-        listViewTopArticle.setLayoutManager(new LinearLayoutManager(this));
-
-        usersListAdapter = new UserListAdapter(usersList, presenter);
-        listViewTopPeople.setAdapter(usersListAdapter);
-        listViewTopPeople.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        listViewTopPeople.setItemAnimator(new DefaultItemAnimator());
-        listViewTopPeople.setHasFixedSize(true);
-        listViewTopPeople.setLayoutManager(new LinearLayoutManager(this));
-    }
-
-    private void initDialog() {
-        AlertDialog.Builder builderDialog = new AlertDialog.Builder(this);
-        builderDialog.setMessage(R.string.dialog_loading)
-                .setNegativeButton(R.string.button_cancel, (dialog1, id) -> hideDialog());
-        builderDialog.setCancelable(false);
-        dialog = builderDialog.create();
-    }
-
     private void initView() {
-        presenter.setView(this);
-        presenter.loadArticleData();
+        if (fragment == null) {
+            fragment = HomeFragment.newInstance();
+            loadFragment();
+        }
+
+        if (navigation == null || navigation.getChildCount() == 0) {
+            return;
+
+        }
+        navigation.getChildAt(0).setSelected(true);
+
     }
 
-    public void initValidate(View view) {
-        EditText editTextName = (EditText) findViewById(R.id.editTextName);
-        EditText editTextMail = (EditText) findViewById(R.id.editTextMail);
-        EditText editTextMessage = (EditText) findViewById(R.id.editTextMessage);
-        ArrayList<Validators> arrayList = new ArrayList<>();
-        arrayList.add(new Validators(this, editTextName).minLenght(5).maxLenght(50).required());
-        arrayList.add(new Validators(this, editTextMail).isMail().required());
-        arrayList.add(new Validators(this, editTextMessage).minLenght(5).required());
-        boolean validate = true;
-        for (Validators v : arrayList) {
-            v.getTextView().setError(null);
-            try {
-                v.validate();
-            } catch (ValidationException e) {
-                v.getTextView().setError(e.getMessage());
-                validate = false;
-                if (getCurrentFocus() == null) {
-                    v.getTextView().requestFocus();
-                }
-            }
-        }
-
-        if (validate) {
-            ContactMessage contactMessage = new ContactMessage();
-            contactMessage.setName(editTextName.getText().toString());
-            contactMessage.setMail(editTextMail.getText().toString());
-            contactMessage.setContent(editTextMessage.getText().toString());
-            presenter.sendMessage(contactMessage);
-            KeyboardHelper.KeyboardHide(this, getCurrentFocus());
-        }
+    private void loadFragment() {
+        Log.d("aaaaaaa", "loadFragment=" + fragment.getClass().getSimpleName());
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
     }
 
 
@@ -167,74 +81,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                changeVisible(View.VISIBLE, View.GONE, View.GONE);
-                articlesList.clear();
-                articlesListAdapter.notifyDataSetChanged();
-                presenter.loadArticleData();
+                fragment = HomeFragment.newInstance();
+                loadFragment();
                 return true;
             case R.id.navigation_users:
-                changeVisible(View.GONE, View.VISIBLE, View.GONE);
-                usersList.clear();
-                usersListAdapter.notifyDataSetChanged();
-                presenter.loadUserData();
+                fragment = TopPeopleFragment.newInstance();
+                loadFragment();
                 return true;
             case R.id.navigation_contact:
-                changeVisible(View.GONE, View.GONE, View.VISIBLE);
+                fragment = ContactFragment.newInstance();
+                loadFragment();
                 return true;
         }
         return false;
-    }
-
-    private void changeVisible(int article, int people, int message) {
-        listViewTopArticle.setVisibility(article);
-        listViewTopPeople.setVisibility(people);
-        linearLayoutContact.setVisibility(message);
-    }
-
-    @Override
-    public void showSnackbar(String msg) {
-        Snackbar.make(rootView, msg, Snackbar.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showDialog() {
-        runOnUiThread(() -> dialog.show());
-    }
-
-    @Override
-    public void hideDialog() {
-        runOnUiThread(() -> dialog.dismiss());
-    }
-
-    @Override
-    public void openUrl(String url) {
-        Uri uri = Uri.parse(url); // missing 'http://' will cause crashed
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        startActivity(intent);
-    }
-
-    @Override
-    public MainActivity getActivity() {
-        return this;
-    }
-
-    @Override
-    public void updateData(Object o) {
-        if (o instanceof User) {
-            usersList.add((User) o);
-            usersListAdapter.notifyItemInserted(usersList.size() - 1);
-        }
-        if (o instanceof Article) {
-            articlesList.add((Article) o);
-            articlesListAdapter.notifyItemInserted(articlesList.size() - 1);
-        }
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        presenter.rxUnsubscribe();
     }
 
     private boolean requestPermissions() {
@@ -295,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                     (dialogInterface, i) -> requestPermissions()
                             );
                         } else {
-                            showSnackbar(getString(R.string.app_permissions));
+                            Snackbar.make(rootView, getString(R.string.app_permissions), Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -305,8 +164,4 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
-    @VisibleForTesting
-    public MainActivityMVP.Presenter getPresenter() {
-        return presenter;
-    }
 }
