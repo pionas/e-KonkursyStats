@@ -11,6 +11,9 @@ import info.e_konkursy.stats.Model.POJO.User;
 public interface TopPeopleFragmentMVP {
     interface View extends BaseView<User> {
         void openUrl(String url);
+
+        @VisibleForTesting
+        Presenter getPresenter();
     }
 
     interface Presenter extends BasePresenter<User> {

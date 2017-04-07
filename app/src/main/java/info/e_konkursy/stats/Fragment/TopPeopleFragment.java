@@ -1,8 +1,6 @@
 package info.e_konkursy.stats.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -28,18 +26,24 @@ import info.e_konkursy.stats.R;
 
 
 public class TopPeopleFragment extends BaseFragment implements TopPeopleFragmentMVP.View {
+    private static final String TOP_PEOPLE_FRAGMENT_LOAD_DATA = "TOP_PEOPLE_FRAGMENT_LOAD_DATA";
     @Inject
     TopPeopleFragmentMVP.Presenter presenter;
 
     private UserListAdapter usersListAdapter;
     private List<User> usersList = new ArrayList<>();
+    private boolean loadData;
 
     public TopPeopleFragment() {
     }
 
     @SuppressWarnings("unused")
-    public static TopPeopleFragment newInstance() {
+    public static TopPeopleFragment newInstance(boolean loadData) {
+        Bundle args = new Bundle();
+        args.putBoolean(TOP_PEOPLE_FRAGMENT_LOAD_DATA, loadData);
+
         TopPeopleFragment fragment = new TopPeopleFragment();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -48,6 +52,9 @@ public class TopPeopleFragment extends BaseFragment implements TopPeopleFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         new App().getTopPeopleComponent().topPeopleModule(new TopPeopleModule()).build().inject(this);
+        if (getArguments() != null) {
+            loadData = getArguments().getBoolean(TOP_PEOPLE_FRAGMENT_LOAD_DATA, true);
+        }
         initDialog();
     }
 
@@ -73,7 +80,7 @@ public class TopPeopleFragment extends BaseFragment implements TopPeopleFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
-        if (usersList == null || usersList.size() == 0) {
+        if ((usersList == null || usersList.size() == 0) && loadData) {
             presenter.loadData();
         }
     }
@@ -84,4 +91,8 @@ public class TopPeopleFragment extends BaseFragment implements TopPeopleFragment
         usersListAdapter.notifyItemInserted(usersList.size() - 1);
     }
 
+    @Override
+    public TopPeopleFragmentMVP.Presenter getPresenter() {
+        return presenter;
+    }
 }

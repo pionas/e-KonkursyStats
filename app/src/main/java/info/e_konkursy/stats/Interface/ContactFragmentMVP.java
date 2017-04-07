@@ -13,6 +13,9 @@ import rx.Observable;
 public interface ContactFragmentMVP {
     interface View extends BaseView<ContactMessage> {
         void initValidate(android.view.View view);
+
+        @VisibleForTesting
+        Presenter getPresenter();
     }
 
     interface Presenter extends BasePresenter<ContactMessage> {

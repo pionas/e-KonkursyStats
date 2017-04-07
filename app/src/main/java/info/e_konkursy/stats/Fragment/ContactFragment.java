@@ -21,9 +21,7 @@ import info.e_konkursy.stats.Helpers.KeyboardHelper;
 import info.e_konkursy.stats.Interface.ContactFragmentMVP;
 import info.e_konkursy.stats.Model.POJO.ContactMessage;
 import info.e_konkursy.stats.Module.ContactModule;
-import info.e_konkursy.stats.Module.TopPeopleModule;
 import info.e_konkursy.stats.R;
-import info.e_konkursy.stats.Utils.UIMessage;
 import info.e_konkursy.stats.Utils.Validation.Validators;
 
 /**
@@ -103,6 +101,11 @@ public class ContactFragment extends BaseFragment implements ContactFragmentMVP.
             presenter.sendMessage(contactMessage);
             KeyboardHelper.KeyboardHide(mActivity, mActivity.getCurrentFocus());
         }
+    }
+
+    @Override
+    public ContactFragmentMVP.Presenter getPresenter() {
+        return presenter;
     }
 
     @Override

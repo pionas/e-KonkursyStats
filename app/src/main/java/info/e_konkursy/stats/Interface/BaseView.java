@@ -20,4 +20,5 @@ public interface BaseView<T> {
     String getString(int rId);
 
     void initDialog();
+
 }

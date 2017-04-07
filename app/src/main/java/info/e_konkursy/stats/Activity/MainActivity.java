@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
@@ -33,6 +32,7 @@ import info.e_konkursy.stats.Utils.Log;
 
 public class MainActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
+    private static final String MAIN_ACTIVITY_LOAD_DEFAULT_FRAGMENT = "MAIN_ACTIVITY_LOAD_DEFAULT_FRAGMENT";
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
     @BindView(R.id.container)
@@ -52,7 +52,9 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         if (!requestPermissions()) {
             return;
         }
-        initDefaultFragment();
+        if (getIntent() != null && getIntent().getBooleanExtra(MAIN_ACTIVITY_LOAD_DEFAULT_FRAGMENT, true)) {
+            initDefaultFragment();
+        }
     }
 
     private void initListener() {
@@ -67,12 +69,11 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         navigation.getMenu().performIdentifierAction(R.id.navigation_home, 0);
     }
 
-
     private void loadFragment() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-        ft.replace(R.id.content, fragment);
-        if (!(fragment instanceof HomeFragment)) {
+        ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+        ft.replace(R.id.content, fragment, fragment.getClass().getSimpleName());
+        if ((fragment instanceof HomeFragment) && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             ft.addToBackStack(null);
         }
         ft.commit();
@@ -83,11 +84,11 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                fragment = HomeFragment.newInstance();
+                fragment = HomeFragment.newInstance(true);
                 loadFragment();
                 return true;
             case R.id.navigation_users:
-                fragment = TopPeopleFragment.newInstance();
+                fragment = TopPeopleFragment.newInstance(true);
                 loadFragment();
                 return true;
             case R.id.navigation_contact:
@@ -168,12 +169,12 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
             getSupportFragmentManager().popBackStack();
             navigation.getMenu().getItem(0).setChecked(true);
-        } else {
-            super.onBackPressed();
+            return;
         }
+        finish();
     }
 
 }
