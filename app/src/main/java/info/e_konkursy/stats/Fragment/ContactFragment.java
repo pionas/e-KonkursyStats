@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.App.App;
 import info.e_konkursy.stats.Exception.ValidationException;
 import info.e_konkursy.stats.Helpers.KeyboardHelper;
@@ -111,5 +112,13 @@ public class ContactFragment extends BaseFragment implements ContactFragmentMVP.
     @Override
     public void updateData(ContactMessage o) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).getNavigation().getMenu().findItem(R.id.navigation_contact).setChecked(true);
+        }
     }
 }

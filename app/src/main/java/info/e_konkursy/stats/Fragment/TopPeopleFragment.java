@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import info.e_konkursy.stats.Activity.MainActivity;
 import info.e_konkursy.stats.Adapter.UserListAdapter;
 import info.e_konkursy.stats.App.App;
 import info.e_konkursy.stats.Interface.TopPeopleFragmentMVP;
@@ -94,5 +95,13 @@ public class TopPeopleFragment extends BaseFragment implements TopPeopleFragment
     @Override
     public TopPeopleFragmentMVP.Presenter getPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).getNavigation().getMenu().findItem(R.id.navigation_users).setChecked(true);
+        }
     }
 }

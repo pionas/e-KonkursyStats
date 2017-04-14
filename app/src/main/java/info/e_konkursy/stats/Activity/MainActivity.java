@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
@@ -52,7 +54,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         if (!requestPermissions()) {
             return;
         }
-        if (getIntent() != null && getIntent().getBooleanExtra(MAIN_ACTIVITY_LOAD_DEFAULT_FRAGMENT, true)) {
+        if (getIntent() != null && getIntent().getBooleanExtra(MAIN_ACTIVITY_LOAD_DEFAULT_FRAGMENT, true) && savedInstanceState == null) {
             initDefaultFragment();
         }
     }
@@ -70,13 +72,12 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
     }
 
     private void loadFragment() {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = fragManager.beginTransaction();
         ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
         ft.replace(R.id.content, fragment, fragment.getClass().getSimpleName());
-        if ((fragment instanceof HomeFragment) && getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            ft.addToBackStack(null);
-        }
+        ft.addToBackStack(fragment.getClass().getSimpleName());
         ft.commit();
+        fragManager.executePendingTransactions();
     }
 
 
@@ -167,14 +168,8 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            getSupportFragmentManager().popBackStack();
-            navigation.getMenu().getItem(0).setChecked(true);
-            return;
-        }
-        finish();
+    public BottomNavigationView getNavigation() {
+        return navigation;
     }
 
 }
